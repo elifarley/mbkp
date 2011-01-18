@@ -1,0 +1,3 @@
+#!/bin/sh
+
+BKP_BASE="file:///volumes/data/backups-duplicity"
