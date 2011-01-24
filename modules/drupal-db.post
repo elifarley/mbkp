@@ -1,0 +1,9 @@
+#!/bin/sh
+
+drupal_on() {
+  pushd "$DRUPAL_ROOT" || exit 1
+  php _online.php || exit 2
+  popd || exit 3
+}
+
+drupal_on

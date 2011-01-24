@@ -1,0 +1,6 @@
+#!/bin/sh
+
+_module_cache="$1"; shift
+
+mysqldump -h "$DB_HOST" -u "$DB_USER" --password="$DB_PASSWORD" "$DB_NAME" > "$_module_cache"/civicrm-backup.sql || exit $?
+

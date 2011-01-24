@@ -1,0 +1,6 @@
+#!/bin/sh
+
+LOCK="$WIKI_ROOT/read-only-message"
+rm "$LOCK" || exit $?
+
+exit 0

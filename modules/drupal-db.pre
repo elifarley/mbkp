@@ -1,0 +1,14 @@
+#!/bin/sh
+
+_module_cache="$1"; shift
+
+drupal_off() {
+  pushd "$DRUPAL_ROOT" || exit 1
+  php _offline.php || exit 2
+  popd || exit 3
+}
+
+drupal_off
+
+mysqldump -h "$DB_HOST" -u "$DB_USER" --password="$DB_PASSWORD" "$DB_NAME" > "$_module_cache"/drupal-backup.sql || exit $?
+
