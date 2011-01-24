@@ -1,0 +1,6 @@
+#!/bin/sh
+
+set +x
+
+# Gpg passphrase for Duplicity
+PASSPHRASE='my-passphrase'

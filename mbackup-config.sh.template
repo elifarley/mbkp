@@ -1,0 +1,13 @@
+#!/bin/sh
+
+export RSYNC_RSH="$(which rsync) --protocol=29"
+SSH_OPTS='--ssh-options="-oIdentityFile=/home/USER/.ssh/id_dsa"'
+SITE_ROOT="$HOME/mysite.org"
+
+MBKP_ROOT="$HOME/.mbackup"
+
+MBKP_LOCAL_DATA="$MBKP_ROOT/data"
+SYNC_ROOT="$MBKP_ROOT/cache/module-data"
+
+MBKP_BASE_TARGET="rsync://user@backup.host.com"
+MBKP_BASE_TARGET="file://$MBKP_LOCAL_DATA"

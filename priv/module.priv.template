@@ -1,0 +1,7 @@
+#!/bin/sh
+DB_HOST="myhost.org"
+DB_USER="mydbuser"
+DB_NAME="mydbname"
+DB_PASSWORD='mydbpassword'
+
+

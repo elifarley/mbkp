@@ -1,4 +1,4 @@
 
 ~$
-priv/passwords.sh$
-bkp-config.sh$
+priv/.*\.priv$
+mbackup-config.sh$
