@@ -1,14 +1,14 @@
 #!/bin/sh
 
-_module_cache="$1"; shift
-
 RO="Backup in progress. Access will be restored shortly."
-LOCK="$WIKI_ROOT/read-only-message"
+LOCK="$SITE_ROOT/w/read-only-message"
 [ -s $LOCK ] || {
   echo "$RO" > "$LOCK" || exit $?
 }
 
-mysqldump -h "$DB_HOST" -u "$DB_USER" --password="$DB_PASSWORD" "$DB_NAME" > "$_module_cache"/wiki-backup.sql || exit $?
+db_dump wiki-backup
 # --default-character-set=latin1
 
-exit 0
+#
+
+full_if_older_than="6M"

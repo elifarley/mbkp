@@ -1,6 +1,9 @@
 #!/bin/sh
 
-_module_cache="$1"; shift
+db_dump forum-backup
 
-mysqldump -h "$DB_HOST" -u "$DB_USER" --password="$DB_PASSWORD" "$DB_NAME" > "$_module_cache"/forum-backup.sql || exit $?
+#
+
+full_if_older_than="6M"
+extra=''
 

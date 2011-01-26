@@ -1,6 +1,4 @@
 #!/bin/sh
 
-LOCK="$WIKI_ROOT/read-only-message"
+LOCK="$SITE_ROOT/w/read-only-message"
 rm "$LOCK" || exit $?
-
-exit 0

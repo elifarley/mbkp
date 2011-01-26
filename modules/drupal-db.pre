@@ -1,14 +1,20 @@
 #!/bin/sh
 
-_module_cache="$1"; shift
-
 drupal_off() {
-  pushd "$DRUPAL_ROOT" || exit 1
-  php _offline.php || exit 2
+  pushd "$SITE_ROOT/community" || exit 1
+  php _offline.php || {
+    popd
+    exit 2
+  }
   popd || exit 3
 }
 
 drupal_off
 
-mysqldump -h "$DB_HOST" -u "$DB_USER" --password="$DB_PASSWORD" "$DB_NAME" > "$_module_cache"/drupal-backup.sql || exit $?
+db_dump drupal-backup
+
+#
+
+full_if_older_than="6M"
+extra=''
 

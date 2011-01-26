@@ -1,8 +1,11 @@
 #!/bin/sh
 
 drupal_on() {
-  pushd "$DRUPAL_ROOT" || exit 1
-  php _online.php || exit 2
+  pushd "$SITE_ROOT/community" || exit 1
+  php _online.php || {
+    popd
+    exit 2
+  }
   popd || exit 3
 }
 
