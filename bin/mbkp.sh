@@ -71,7 +71,7 @@ FAILED=''
 # Variables that can be overriden on module config files
 _module_cache="$SYNC_ROOT/$module"
 mbkp_src="$_module_cache"
-mbkp_target="$module"
+mbkp_target="$MBKP_BASE_TARGET"
 VOLSIZE="50"
 full_if_older_than="6M"
 extra=''
@@ -94,7 +94,9 @@ else
   echo "### $pre_hook NOT CALLED."
 fi
 
-mbkp_full_target="$MBKP_BASE_TARGET/$mbkp_target"
+mbkp_full_target="$mbkp_target/$module"
+
+resolved_src="$(readlink $mbkp_src)" && mbkp_src="$resolved_src"
 
 echo "Volume size: $VOLSIZE MB"
 echo "Module source at $mbkp_src"
@@ -102,7 +104,7 @@ echo "Module target at $mbkp_full_target"
 echo "full_if_older_than: $full_if_older_than"
 echo "extra: $extra"
 
-includes="$BASEDIR/../modules/$module.includes"
+includes="$BASEDIR/../modules/$module.files"
 [ -s "$includes" ] && {
   includes="--include-globbing-filelist $includes"
 } || includes=''
@@ -112,7 +114,7 @@ excludes="$BASEDIR/../modules/$module.excludes"
   excludes="--exclude-globbing-filelist $excludes"
 } || excludes=''
 
-do_backup "$mbkp_src/" "$mbkp_full_target"
+do_backup "$mbkp_src" "$mbkp_full_target"
 
 post_hook="$BASEDIR/../modules/$module.post"
 if [ -s "$post_hook" ]; then

@@ -1,6 +1,4 @@
 #!/bin/sh
 
-SRC="/etc"
-TARGET="etc"
+mbkp_src="/etc"
 full_if_older_than="6M"
-extra=''
