@@ -1,8 +1,8 @@
 #!/bin/sh
 
 export RSYNC_RSH="$(which rsync) --protocol=29"
-SSH_OPTS='--ssh-options="-oIdentityFile=/home/USER/.ssh/id_dsa"'
-SITE_ROOT="$HOME/mysite.org"
+# SSH_OPTS='--ssh-options="-oIdentityFile=/home/USER/.ssh/id_dsa-nopw"'
+SITE_ROOT="$HOME/my.site.org"
 
 MBKP_CONFIG="$HOME/.config/mbackup"
 MBKP_DATA="$HOME/.local/share/mbackup"

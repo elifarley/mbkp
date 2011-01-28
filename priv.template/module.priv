@@ -1,4 +1,5 @@
-#!/bin/sh
+set +x
+
 DB_HOST="myhost.org"
 DB_USER="mydbuser"
 DB_NAME="mydbname"

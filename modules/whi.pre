@@ -1,6 +1,0 @@
-#!/bin/sh
-
-mbkp_src="/volumes/data/webb-home-image/misc"
-full_if_older_than="6M"
-extra=""
-

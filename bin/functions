@@ -30,7 +30,12 @@ init() {
   . "$BASEDIR/../mbackup-config.sh" || exit 1
   ((VERBOSE)) && echo "mbackup-config.sh called."
 
-  local mbkp_priv_hook="$BASEDIR/../priv/_mbackup.priv"
+  [ -s "$MBKP_CONFIG/mbackup-config.sh" ] && {
+    . "$MBKP_CONFIG/mbackup-config.sh" || exit 1
+    ((VERBOSE)) && echo "$MBKP_CONFIG/mbackup-config.sh called."
+  }
+
+  local mbkp_priv_hook="$MBKP_CONFIG/priv/_mbackup.priv"
   if [ -f "$mbkp_priv_hook" ]; then
     . "$mbkp_priv_hook" || exit 1
     ((VERBOSE)) && echo "$mbkp_priv_hook called."
@@ -66,7 +71,7 @@ init_module() {
   full_if_older_than="6M"
   extra=''
 
-  local priv_hook="$BASEDIR/../priv/$module.priv"
+  local priv_hook="$MBKP_CONFIG/priv/$module.priv"
   [ -f "$priv_hook" ] && {
     . "$priv_hook"
     ((VERBOSE)) && echo "$priv_hook called."
@@ -80,7 +85,7 @@ init_module() {
 
 pre_module_backup() {
 
-  local pre_hook="$BASEDIR/../modules/$module.pre"
+  local pre_hook="$MBKP_CONFIG/modules/$module.pre"
   if [ -s "$pre_hook" ]; then
     time . $pre_hook "$_module_cache" || exit $?
     ((VERBOSE)) && echo "$pre_hook called."
@@ -97,12 +102,12 @@ pre_module_backup() {
   echo "full_if_older_than: $full_if_older_than"
   echo "extra: $extra"
 
-  includes="$BASEDIR/../modules/$module.files"
+  includes="$MBKP_CONFIG/modules/$module.files"
   [ -s "$includes" ] && {
     includes="--include-globbing-filelist $includes"
   } || includes=''
 
-  excludes="$BASEDIR/../modules/$module.excludes"
+  excludes="$MBKP_CONFIG/modules/$module.excludes"
   [ -s "$excludes" ] && {
     excludes="--exclude-globbing-filelist $excludes"
   } || excludes=''
@@ -111,7 +116,7 @@ pre_module_backup() {
 
 post_module_backup() {
 
-  local post_hook="$BASEDIR/../modules/$module.post"
+  local post_hook="$MBKP_CONFIG/modules/$module.post"
   if [ -s "$post_hook" ]; then
    . $post_hook "$_module_cache" || FAILED="$post_hook"
     ((VERBOSE)) && echo "$post_hook called."
