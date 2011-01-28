@@ -4,3 +4,6 @@ set +x
 
 # Gpg passphrase for Duplicity
 PASSPHRASE='my-passphrase'
+
+# Password for ssh / sftp
+FTP_PASSWORD="my-password"

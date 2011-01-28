@@ -4,10 +4,13 @@ export RSYNC_RSH="$(which rsync) --protocol=29"
 SSH_OPTS='--ssh-options="-oIdentityFile=/home/USER/.ssh/id_dsa"'
 SITE_ROOT="$HOME/mysite.org"
 
-MBKP_ROOT="$HOME/.mbackup"
+MBKP_CONFIG="$HOME/.config/mbackup"
+MBKP_DATA="$HOME/.local/share/mbackup"
 
-MBKP_LOCAL_DATA="$MBKP_ROOT/data"
-SYNC_ROOT="$MBKP_ROOT/cache/module-data"
+MBKP_LOCAL_DATA="$MBKP_DATA/data"
+MBACKUP_ARCHIVE="$MBKP_DATA/cache/duplicity-archive"
+MBKP_MODULE_CACHE="$MBKP_DATA/cache/modules"
 
 MBKP_BASE_TARGET="rsync://user@backup.host.com"
+MBKP_BASE_TARGET="sftp://user@backup.host.com/mbackup-modules"
 MBKP_BASE_TARGET="file://$MBKP_LOCAL_DATA"

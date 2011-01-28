@@ -15,7 +15,7 @@ db_dump () {
 
 dupl() {
   PASSPHRASE=$PASSPHRASE duplicity -v4 \
-  --archive-dir="$HOME/.mbackup/cache/duplicity-archive" \
+  --archive-dir="$MBACKUP_ARCHIVE" \
   --name "$module" "$@"
 }
 
@@ -51,12 +51,12 @@ else
   exit 1
 fi
 
-[ -d "$SYNC_ROOT" ] || {
-  mkdir -p "$SYNC_ROOT" || exit $?
+[ -d "$MBKP_MODULE_CACHE" ] || {
+  mkdir -p "$MBKP_MODULE_CACHE" || exit $?
 }
 
-[ -d "$HOME/.mbackup/data" ] || {
-  mkdir -p "$HOME/.mbackup/data" || exit $?
+[ -d "$MBKP_LOCAL_DATA" ] || {
+  mkdir -p "$MBKP_LOCAL_DATA" || exit $?
 }
 
 # set -x
@@ -69,7 +69,7 @@ echo "=================================================="
 FAILED=''
 
 # Variables that can be overriden on module config files
-_module_cache="$SYNC_ROOT/$module"
+_module_cache="$MBKP_MODULE_CACHE/$module"
 mbkp_src="$_module_cache"
 mbkp_target="$MBKP_BASE_TARGET"
 VOLSIZE="50"
