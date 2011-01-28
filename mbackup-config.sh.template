@@ -8,7 +8,7 @@ MBKP_CONFIG="$HOME/.config/mbackup"
 MBKP_DATA="$HOME/.local/share/mbackup"
 
 MBKP_LOCAL_DATA="$MBKP_DATA/data"
-MBACKUP_ARCHIVE="$MBKP_DATA/cache/duplicity-archive"
+MBKP_ARCHIVE="$MBKP_DATA/cache/duplicity-archive"
 MBKP_MODULE_CACHE="$MBKP_DATA/cache/modules"
 
 MBKP_BASE_TARGET="rsync://user@backup.host.com"
