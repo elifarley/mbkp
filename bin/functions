@@ -25,6 +25,14 @@ do_backup() {
   $extra "$1/" "$2" || FAILED="$module"
 }
 
+init_dir() {
+  local priv_dir="$(dirname $1)"
+  MBKP_FIRST_RUN=1
+  mkdir -p "$priv_dir" || exit $?
+  cp -av $BASEDIR/../priv.template/* "$priv_dir"/ || exit $?
+  chmod -R go= "$priv_dir" || exit $?
+}
+
 init() {
 
   . "$BASEDIR/../mbackup-config.sh" || exit 1
@@ -40,9 +48,13 @@ init() {
     . "$mbkp_priv_hook" || exit 1
     ((VERBOSE)) && echo "$mbkp_priv_hook called."
   else
-    echo "Please install $mbkp_priv_hook"
-    exit 1
+    init_dir "$mbkp_priv_hook"
   fi
+
+  ((MBKP_FIRST_RUN)) && {
+    echo "Please edit the file '$mbkp_priv_hook' and try again."
+    exit 1
+  }
 
   [ -d "$MBKP_MODULE_CACHE" ] || {
     mkdir -p "$MBKP_MODULE_CACHE" || {

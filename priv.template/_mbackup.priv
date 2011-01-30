@@ -1,9 +1,14 @@
-#!/bin/sh
+# Please choose the default passwords you want to use
+# for protecting your backups.
+
 
 set +x
 
-# Gpg passphrase for Duplicity
+# Default Gpg passphrase for Duplicity
 PASSPHRASE='my-passphrase'
 
-# Password for ssh / sftp
+# Default password for ssh / sftp
 FTP_PASSWORD="my-password"
+
+# Delete the line below in order to use mbackup:
+MBKP_FIRST_RUN=1
