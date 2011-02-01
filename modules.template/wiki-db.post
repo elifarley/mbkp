@@ -1,4 +1,2 @@
-#!/bin/sh
-
 LOCK="$SITE_ROOT/w/read-only-message"
 rm "$LOCK" || exit $?

@@ -1,11 +1,1 @@
-#!/bin/sh
-
-_module_cache="$1"; shift
-
 db_dump civicrm-backup
-
-#
-
-full_if_older_than="6M"
-extra=''
-

@@ -1,5 +1,3 @@
-#!/bin/sh
-
 drupal_on() {
   pushd "$SITE_ROOT/community" || exit 1
   php _online.php || {

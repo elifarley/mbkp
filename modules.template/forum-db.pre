@@ -1,9 +1,1 @@
-#!/bin/sh
-
 db_dump forum-backup
-
-#
-
-full_if_older_than="6M"
-extra=''
-

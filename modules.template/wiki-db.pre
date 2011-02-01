@@ -1,5 +1,3 @@
-#!/bin/sh
-
 RO="Backup in progress. Access will be restored shortly."
 LOCK="$SITE_ROOT/w/read-only-message"
 [ -s $LOCK ] || {
@@ -8,7 +6,3 @@ LOCK="$SITE_ROOT/w/read-only-message"
 
 db_dump wiki-backup
 # --default-character-set=latin1
-
-#
-
-full_if_older_than="6M"

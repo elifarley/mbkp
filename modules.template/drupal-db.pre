@@ -1,5 +1,3 @@
-#!/bin/sh
-
 drupal_off() {
   pushd "$SITE_ROOT/community" || exit 1
   php _offline.php || {
@@ -12,9 +10,3 @@ drupal_off() {
 drupal_off
 
 db_dump drupal-backup
-
-#
-
-full_if_older_than="6M"
-extra=''
-
