@@ -89,6 +89,9 @@ init_module() {
     ((VERBOSE)) && echo "$priv_hook called."
   }
 
+  mbkp_full_target="$mbkp_target/$module"
+  resolved_src="$(readlink $mbkp_src)" && mbkp_src="$resolved_src"
+
   [ -e "$_module_cache" ] || {
     mkdir "$_module_cache" || exit $?
   }
@@ -104,9 +107,6 @@ pre_module_backup() {
   else
     echo "### $pre_hook NOT CALLED."
   fi
-
-  mbkp_full_target="$mbkp_target/$module"
-  resolved_src="$(readlink $mbkp_src)" && mbkp_src="$resolved_src"
 
   echo "Volume size: $VOLSIZE MB"
   echo "Module source at $mbkp_src"
