@@ -4,25 +4,21 @@
   module="--all"
 } || module="$1"
 
-BASEDIR="$(dirname $(readlink $0))"
 
-. "$BASEDIR/../priv/priv-config.sh"
-. "$BASEDIR/../mbackup-config.sh"
+BASEDIR="$(readlink $0)" || BASEDIR="$0"
+BASEDIR="$(dirname $BASEDIR)"
 
-DUPLICITY="duplicity"
+. "$BASEDIR/functions"
 
-_module_cache="$SYNC_ROOT/$module"
-mbkp_target="$module"
+init
+init_module
 
 [ "$module" == "--all" ] && {
 
-  du -hs $HOME/.mbackup/data/*
+  du -hs $(dirname $mbkp_full_target | cut -c 8-)/* | awk -F/ '{ print $NF,$1 }'
 
 } || {
 
-  PASSPHRASE=$PASSPHRASE $DUPLICITY list-current-files -v8 \
---name "$module" \
---archive-dir=$HOME/.mbackup/cache/duplicity-archive \
-"$MBKP_BASE_TARGET/$mbkp_target"
+  dupl list-current-files -v8 "$mbkp_full_target"
 
 }
