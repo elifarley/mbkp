@@ -2,7 +2,7 @@
 
 [ "$#" -lt 1 ] && {
   module="--all"
-} || module="$1"
+} || module="$1"; shift
 
 
 BASEDIR="$(readlink $0)" || BASEDIR="$0"
@@ -19,6 +19,6 @@ init_module
 
 } || {
 
-  dupl list-current-files -v8 "$mbkp_full_target"
+  dupl list-current-files -v8 "$@" "$mbkp_full_target"
 
 }

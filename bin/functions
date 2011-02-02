@@ -96,6 +96,16 @@ init_module() {
     mkdir "$_module_cache" || exit $?
   }
 
+  includes="$MBKP_CONFIG/modules/$module.files"
+  [ -s "$includes" ] && {
+    includes="--include-globbing-filelist $includes"
+  } || includes=''
+
+  excludes="$MBKP_CONFIG/modules/$module.excludes"
+  [ -s "$excludes" ] && {
+    excludes="--exclude-globbing-filelist $excludes"
+  } || excludes=''
+
 }
 
 pre_module_backup() {
@@ -113,16 +123,6 @@ pre_module_backup() {
   echo "Module target at $mbkp_full_target"
   echo "full_if_older_than: $full_if_older_than"
   echo "extra: $extra"
-
-  includes="$MBKP_CONFIG/modules/$module.files"
-  [ -s "$includes" ] && {
-    includes="--include-globbing-filelist $includes"
-  } || includes=''
-
-  excludes="$MBKP_CONFIG/modules/$module.excludes"
-  [ -s "$excludes" ] && {
-    excludes="--exclude-globbing-filelist $excludes"
-  } || excludes=''
 
 } # pre_module_backup
 
