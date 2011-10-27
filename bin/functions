@@ -1,6 +1,6 @@
 db_dump () {
   # db_dump dump_name
-  local dump_name="${1:-$module}"; shift
+  local dump_name="${1:-$DB_NAME}"; shift
   mysqldump "$@" $db_extra -h "$DB_HOST" -u "$DB_USER" --password="$DB_PASSWORD" "$DB_NAME" > "$_module_cache/$dump_name.sql" || exit $?
 }
 
@@ -32,6 +32,7 @@ do_backup() {
 
 init_dir() {
   local priv_dir="$(dirname $1)"
+  echo "init_dir: $priv_dir"
   MBKP_FIRST_RUN=1
   mkdir -p "$priv_dir" || exit $?
   cp -av $CMD_BASE/../priv.template/* "$priv_dir"/ || exit $?
@@ -40,18 +41,18 @@ init_dir() {
 
 init() {
 
+  ((VERBOSE)) && echo "Calling mbackup-config.sh"
   . "$CMD_BASE/../mbackup-config.sh" || exit 1
-  ((VERBOSE)) && echo "mbackup-config.sh called."
 
   [ -s "$MBKP_CONFIG/mbackup-config.sh" ] && {
+    ((VERBOSE)) && echo "Calling $MBKP_CONFIG/mbackup-config.sh"
     . "$MBKP_CONFIG/mbackup-config.sh" || exit 1
-    ((VERBOSE)) && echo "$MBKP_CONFIG/mbackup-config.sh called."
   }
 
-  local mbkp_priv_hook="$MBKP_CONFIG/priv/_mbackup.priv"
+  local mbkp_priv_hook="$MBKP_CONFIG/priv/_mbackup.conf"
   if [ -f "$mbkp_priv_hook" ]; then
+    ((VERBOSE)) && echo "Calling $mbkp_priv_hook"
     . "$mbkp_priv_hook" || exit 1
-    ((VERBOSE)) && echo "$mbkp_priv_hook called."
   else
     init_dir "$mbkp_priv_hook"
   fi
@@ -90,31 +91,46 @@ init_module() {
   extra=''
   db_extra=''
 
-  local priv_hook="$MBKP_CONFIG/priv/$module.priv"
-  [ -f "$priv_hook" ] && {
-    . "$priv_hook"
-    echo "Called: $priv_hook"
+  local module_hook="$MBKP_CONFIG/priv/$module.conf"
+  [ -f "$module_hook" ] && {
+    echo "Calling: $module_hook"
+    . "$module_hook"
+  }
+
+  module_hook="$MBKP_CONFIG/modules/$module.conf"
+  [ -f "$module_hook" ] && {
+    echo "Calling: $module_hook"
+    . "$module_hook"
   }
 
   mbkp_full_target="$mbkp_target/$module"
   resolved_src="$(readlink $mbkp_src)" && mbkp_src="$resolved_src"
 
   [ -e "$_module_cache" ] || {
+    ((VERBOSE)) && echo "Creating $_module_cache"
     mkdir "$_module_cache" || exit $?
-    ((VERBOSE)) && echo "Created $_module_cache"
   }
 
   includes="$MBKP_CONFIG/modules/$module.files"
   [ -s "$includes" ] && {
     includes="--include-globbing-filelist $includes"
-    echo "Globbing file list (include): $includes."
+    echo $includes
   } || includes=''
 
   excludes="$MBKP_CONFIG/modules/$module.excludes"
   [ -s "$excludes" ] && {
     excludes="--exclude-globbing-filelist $excludes"
-    echo "Globbing file list (exclude): $excludes."
+    echo $excludes
   } || excludes=''
+
+  echo "Module source: $mbkp_src"
+  echo "Module target: $mbkp_full_target"
+  echo "Volume size  : $volsize MB"
+  echo "Full if older: $full_if_older_than"
+  echo "Remove older : $remove_older_than"
+  echo "extra        : $extra"
+  echo "db_extra     : $db_extra"
+  echo '------------------------------------'
 
 }
 
@@ -127,14 +143,6 @@ pre_module_backup() {
   else
     ((VERBOSE)) && echo "### NOT CALLED: $pre_hook"
   fi
-
-  echo "Volume size: $volsize MB"
-  echo "Module source at $mbkp_src"
-  echo "Module target at $mbkp_full_target"
-  echo "full_if_older_than: $full_if_older_than"
-  echo "remove_older_than: $remove_older_than"
-  echo "extra: $extra"
-  echo "db_extra: $db_extra"
 
 } # pre_module_backup
 
