@@ -1,1 +1,2 @@
-db_dump blog-backup
+# Perform database backup
+db_dump

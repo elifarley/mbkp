@@ -7,4 +7,5 @@ drupal_on() {
   popd || exit 3
 }
 
+# Bring Drupal online
 drupal_on

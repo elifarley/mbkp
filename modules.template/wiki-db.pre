@@ -4,5 +4,6 @@ LOCK="$SITE_ROOT/w/read-only-message"
   echo "$RO" > "$LOCK" || exit $?
 }
 
-db_dump wiki-backup
-# --default-character-set=latin1
+db_extra='--default-character-set=latin1'
+
+db_dump

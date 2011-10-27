@@ -1,34 +1,27 @@
-set +x
-
-DB_HOST="myhost.org"
-DB_USER="mydbuser"
-DB_NAME="mydbname"
-DB_PASSWORD='mydbpassword'
-
 # Some examples:
 
 # /etc
 mbkp_src="/etc"
 
-# site-root:
+# site-root.conf:
 mbkp_src="$SITE_ROOT"
 full_if_older_than="12M"
 set -f
 extra="--include $mbkp_src/.htaccess --include $mbkp_src/robots.txt --include $mbkp_src/sitemap.* --include $mbkp_src/favicon.* --include $mbkp_src/*.txt --include $mbkp_src/*.html --include $mbkp_src/*.php --exclude **"
 
-# blog-root:
+# blog-root.conf:
 mbkp_src="$SITE_ROOT/blog"
 extra="--exclude $mbkp_src/wp-content --exclude $mbkp_src/error_log"
 
-# blog-extra:
+# blog-extra.conf:
 mbkp_src="$SITE_ROOT/blog/wp-content"
 extra="--exclude $mbkp_src/backup-db --exclude $mbkp_src/uploads/podpress_temp --exclude $mbkp_src/cache --exclude $mbkp_src/gd-star-rating/cache --exclude $mbkp_src/gt-cache --exclude $mbkp_src/w3tc/tmp --exclude $mbkp_src/w3tc/dbcache --exclude $mbkp_src/w3tc/objectcache --exclude $mbkp_src/w3tc/pgcache --exclude $mbkp_src/widget-cache --exclude $mbkp_src/plugins/si-captcha-for-wordpress/captcha-secureimage/captcha-temp --exclude $mbkp_src/plugins/si-contact-form/captcha-secureimage/captcha-temp"
 
-# blog-cache:
+# blog-cache.conf:
 mbkp_src="$SITE_ROOT/blog/wp-content"
 extra="--include $mbkp_src/cache --include $mbkp_src/gt-cache --include $mbkp_src/w3tc/dbcache --include $mbkp_src/w3tc/objectcache --include $mbkp_src/w3tc/pgcache --include $mbkp_src/widget-cache --exclude $mbkp_src"
 
-# wiki-root (Wikimedia):
+# wiki-root.conf (Mediawiki):
 mbkp_src="$SITE_ROOT/w"
 full_if_older_than="6M"
 extra="--exclude $mbkp_src/files --exclude $mbkp_src/images --exclude $mbkp_src/error_log --exclude $mbkp_src/cache"
@@ -56,4 +49,3 @@ extra="--exclude $mbkp_src/sites"
 
 # drupal-sites:
 mbkp_src="$SITE_ROOT/community/sites"
-
