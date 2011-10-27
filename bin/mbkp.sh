@@ -5,12 +5,12 @@
   exit 1
 }
 
+CMD_BASE="$(readlink -m $0)" || CMD_BASE="$0"; CMD_BASE="$(dirname $CMD_BASE)"
+. "$CMD_BASE/functions"
+
 VERBOSE=0
 
 module="$1"; shift
-
-CMD_BASE="$(readlink -m $0)" || CMD_BASE="$0"; CMD_BASE="$(dirname $CMD_BASE)"
-. "$CMD_BASE/functions"
 
 init
 
