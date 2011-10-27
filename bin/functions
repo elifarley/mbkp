@@ -1,7 +1,45 @@
+EXP_backup_modules() {
+  init
+  local failed_modules=''
+  for module in "$@"; do
+    backup_single_module "$module"
+    [ -z "$FAILED" ] || failed_modules="$failed_modules $FAILED"
+  done
+
+  [ -z "$failed_modules" ] || {
+    echo "#################################################################"
+    echo "############################# FAILED MODULES: '$failed_modules' !"
+    echo "#################################################################"
+    exit 1
+  }
+
+}
+
 db_dump () {
   # db_dump dump_name
   local dump_name="${1:-$DB_NAME}"; shift
   mysqldump "$@" $db_extra -h "$DB_HOST" -u "$DB_USER" --password="$DB_PASSWORD" "$DB_NAME" > "$_module_cache/$dump_name.sql" || exit $?
+}
+
+backup_single_module() {
+
+  module="$1"; shift
+
+  echo "=================================================="
+  echo "Backup STARTED for module $module"
+  echo "=================================================="
+
+  init_module
+  pre_module_backup
+  do_backup "$mbkp_src" "$mbkp_full_target"
+  post_module_backup
+
+  [ -z "$FAILED" ] || {
+    echo "##################################################"
+    echo "############################# FAILED '$FAILED' !"
+    echo "##################################################"
+  }
+
 }
 
 dupl() {
