@@ -7,12 +7,10 @@
 
 VERBOSE=0
 
-BASEDIR="$(readlink $0)" || BASEDIR="$0"
-BASEDIR="$(dirname $BASEDIR)"
-
 module="$1"; shift
 
-. "$BASEDIR/functions"
+CMD_BASE="$(readlink -m $0)" || CMD_BASE="$0"; CMD_BASE="$(dirname $CMD_BASE)"
+. "$CMD_BASE/functions"
 
 init
 

@@ -1,7 +1,7 @@
 db_dump () {
   # db_dump dump_name
-  local dump_name="$1"; shift
-  mysqldump "$@" -h "$DB_HOST" -u "$DB_USER" --password="$DB_PASSWORD" "$DB_NAME" > "$_module_cache/$dump_name.sql" || exit $?
+  local dump_name="${1:-$module}"; shift
+  mysqldump "$@" $db_extra -h "$DB_HOST" -u "$DB_USER" --password="$DB_PASSWORD" "$DB_NAME" > "$_module_cache/$dump_name.sql" || exit $?
 }
 
 dupl() {
@@ -13,29 +13,34 @@ dupl() {
 do_backup() {
   # do_backup src target
 
-  dupl cleanup "$2"
-  dupl remove-older-than 6M "$2"
+  local backup_src="$1"; shift
+  local backup_target="$1"; shift
+  # Append '/' if needed
+  [[ "$(echo $backup_src | awk '$0=$NF' FS=)" == "/" ]] || backup_src="$backup_src/"
+  
+  dupl cleanup "$backup_target"
+  dupl remove-older-than "$remove_older_than" "$backup_target"
 
   # FTP_PASSWORD=$FTP_PASSWORD
-  dupl ${VOLSIZE:+--volsize="$VOLSIZE"} \
+  dupl ${volsize:+--volsize="$volsize"} \
   --ssh-askpass --exclude-other-filesystems \
   $SSH_OPTS \
   --full-if-older-than $full_if_older_than \
   $includes $excludes \
-  $extra "$1/" "$2" || FAILED="$module"
+  $extra "$backup_src" "$backup_target" || FAILED="$module"
 }
 
 init_dir() {
   local priv_dir="$(dirname $1)"
   MBKP_FIRST_RUN=1
   mkdir -p "$priv_dir" || exit $?
-  cp -av $BASEDIR/../priv.template/* "$priv_dir"/ || exit $?
+  cp -av $CMD_BASE/../priv.template/* "$priv_dir"/ || exit $?
   chmod -R go= "$priv_dir" || exit $?
 }
 
 init() {
 
-  . "$BASEDIR/../mbackup-config.sh" || exit 1
+  . "$CMD_BASE/../mbackup-config.sh" || exit 1
   ((VERBOSE)) && echo "mbackup-config.sh called."
 
   [ -s "$MBKP_CONFIG/mbackup-config.sh" ] && {
@@ -79,14 +84,16 @@ init_module() {
   _module_cache="$MBKP_MODULE_CACHE/$module"
   mbkp_src="$_module_cache"
   mbkp_target="$MBKP_BASE_TARGET"
-  VOLSIZE="50"
+  volsize="50"
   full_if_older_than="6M"
+  remove_older_than="12M"
   extra=''
+  db_extra=''
 
   local priv_hook="$MBKP_CONFIG/priv/$module.priv"
   [ -f "$priv_hook" ] && {
     . "$priv_hook"
-    ((VERBOSE)) && echo "$priv_hook called."
+    echo "Called: $priv_hook"
   }
 
   mbkp_full_target="$mbkp_target/$module"
@@ -94,16 +101,19 @@ init_module() {
 
   [ -e "$_module_cache" ] || {
     mkdir "$_module_cache" || exit $?
+    ((VERBOSE)) && echo "Created $_module_cache"
   }
 
   includes="$MBKP_CONFIG/modules/$module.files"
   [ -s "$includes" ] && {
     includes="--include-globbing-filelist $includes"
+    echo "Globbing file list (include): $includes."
   } || includes=''
 
   excludes="$MBKP_CONFIG/modules/$module.excludes"
   [ -s "$excludes" ] && {
     excludes="--exclude-globbing-filelist $excludes"
+    echo "Globbing file list (exclude): $excludes."
   } || excludes=''
 
 }
@@ -112,17 +122,19 @@ pre_module_backup() {
 
   local pre_hook="$MBKP_CONFIG/modules/$module.pre"
   if [ -s "$pre_hook" ]; then
+    echo "Calling: $pre_hook"
     time . $pre_hook "$_module_cache" || exit $?
-    ((VERBOSE)) && echo "$pre_hook called."
   else
-    echo "### $pre_hook NOT CALLED."
+    ((VERBOSE)) && echo "### NOT CALLED: $pre_hook"
   fi
 
-  echo "Volume size: $VOLSIZE MB"
+  echo "Volume size: $volsize MB"
   echo "Module source at $mbkp_src"
   echo "Module target at $mbkp_full_target"
   echo "full_if_older_than: $full_if_older_than"
+  echo "remove_older_than: $remove_older_than"
   echo "extra: $extra"
+  echo "db_extra: $db_extra"
 
 } # pre_module_backup
 
@@ -130,10 +142,10 @@ post_module_backup() {
 
   local post_hook="$MBKP_CONFIG/modules/$module.post"
   if [ -s "$post_hook" ]; then
+    echo "Calling: $post_hook"
    . $post_hook "$_module_cache" || FAILED="$post_hook"
-    ((VERBOSE)) && echo "$post_hook called."
   else
-    echo "### $post_hook NOT CALLED."
+    ((VERBOSE)) && echo "### $post_hook NOT CALLED."
   fi
 
 } # post_module_backup

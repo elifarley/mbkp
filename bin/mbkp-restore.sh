@@ -2,10 +2,9 @@
 
 module="$1"; shift
 
-BASEDIR="$(readlink $0)" || BASEDIR="$0"
-BASEDIR="$(dirname $BASEDIR)"
+CMD_BASE="$(readlink -m $0)" || CMD_BASE="$0"; CMD_BASE="$(dirname $CMD_BASE)"
+. "$CMD_BASE/functions"
 
-. "$BASEDIR/functions"
 
 init
 init_module

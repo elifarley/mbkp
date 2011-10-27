@@ -1,14 +1,9 @@
 #!/bin/sh
 
-[ "$#" -lt 1 ] && {
-  module="--all"
-} || module="$1"; shift
+module="${1:---all}"; shift
 
-
-BASEDIR="$(readlink $0)" || BASEDIR="$0"
-BASEDIR="$(dirname $BASEDIR)"
-
-. "$BASEDIR/functions"
+CMD_BASE="$(readlink -m $0)" || CMD_BASE="$0"; CMD_BASE="$(dirname $CMD_BASE)"
+. "$CMD_BASE/functions"
 
 init
 init_module
@@ -19,6 +14,6 @@ init_module
 
 } || {
 
-  dupl list-current-files -v8 "$@" "$mbkp_full_target"
+  echo "list-current-files:" && dupl list-current-files -v8 "$@" "$mbkp_full_target"
 
 }

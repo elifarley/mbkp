@@ -2,13 +2,11 @@
 
 module="$1"; shift
 
-BASEDIR="$(readlink $0)" || BASEDIR="$0"
-BASEDIR="$(dirname $BASEDIR)"
-
-. "$BASEDIR/functions"
+CMD_BASE="$(readlink -m $0)" || CMD_BASE="$0"; CMD_BASE="$(dirname $CMD_BASE)"
+. "$CMD_BASE/functions"
 
 init
 init_module
 
-dupl collection-status -v8 "$@" "$mbkp_full_target"
-dupl verify -v8 $includes $excludes "$@" "$mbkp_full_target" "$mbkp_src"
+echo "collection-status:" && dupl collection-status -v8 "$@" "$mbkp_full_target"
+echo "verify:" && dupl verify -v8 $includes $excludes "$@" "$mbkp_full_target" "$mbkp_src"
