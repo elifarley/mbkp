@@ -10,5 +10,3 @@ drupal_off() {
 # Bring Drupall offline
 drupal_off
 
-# Perform database backup
-db_dump

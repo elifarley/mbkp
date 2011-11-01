@@ -15,10 +15,33 @@ EXP_backup_modules() {
 
 }
 
-db_dump () {
-  # db_dump dump_name
+mysql_dump () {
+  echo "START mysql_dump"
+  echo "Host    : $DB_HOST"
+  echo "Database: $DB_NAME"
+
   local dump_name="${1:-$DB_NAME}"; shift
-  mysqldump "$@" $db_extra -h "$DB_HOST" -u "$DB_USER" --password="$DB_PASSWORD" "$DB_NAME" > "$_module_cache/$dump_name.sql" || exit $?
+
+  local _included_tables=''
+  for table in "${included_tables//,/ }"; do
+    table=$(echo $table) # trim whitespaces
+    [ -n "$table" ] && _included_tables="$_included_tables --ignore-table='$DB_NAME.$table'"
+  done;
+  local _excluded_tables=''
+  for table in ${excluded_tables//,/ }; do
+    table=$(echo $table) # trim whitespaces
+    [ -n "$table" ] && _excluded_tables="$_excluded_tables --ignore-table='$DB_NAME.$table'"
+  done;
+
+  [ -n "$included_tables" ] && echo "Included: $included_tables"
+  [ -n "$excluded_tables" ] && echo "Excluded: $excluded_tables"
+  [ -n "$db_extra" ] && echo "db_extra: $db_extra"
+  echo "other   : $@"
+
+  mysqldump "$@" $_included_tables $_excluded_tables $db_extra -h "$DB_HOST" -u "$DB_USER" --password="$DB_PASSWORD" "$DB_NAME" > "$_module_cache/$dump_name.sql" || exit $?
+
+  echo "END   mysql_dump"
+
 }
 
 backup_single_module() {
@@ -127,6 +150,12 @@ init_module() {
   full_if_older_than="6M"
   keep_last_n_backups=3
   extra=''
+  DB_HOST='localhost'
+  DB_NAME=''
+  DB_USER='mbkp'
+  DB_PASSWORD=''
+  included_tables=''
+  excluded_tables=''
   db_extra=''
 
   local module_hook="$MBKP_CONFIG/priv/$module.conf"
@@ -166,8 +195,7 @@ init_module() {
   echo "Volume size  : $volsize MB"
   echo "Full if older: $full_if_older_than"
   echo "Keep last backups: $keep_last_n_backups"
-  echo "extra        : $extra"
-  echo "db_extra     : $db_extra"
+  [ -n "$extra" ] && echo "extra        : $extra"
   echo '------------------------------------'
 
 }
@@ -181,6 +209,8 @@ pre_module_backup() {
   else
     ((VERBOSE)) && echo "### NOT CALLED: $pre_hook"
   fi
+
+  [ -n "$DB_NAME" ] && mysql_dump
 
 } # pre_module_backup
 

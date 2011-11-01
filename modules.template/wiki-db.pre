@@ -5,5 +5,4 @@ LOCK="$SITE_ROOT/w/read-only-message"
 }
 
 db_extra='--default-character-set=latin1'
-
-db_dump
+excluded_tables='table1, table2'
