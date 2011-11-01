@@ -22,15 +22,10 @@ mysql_dump () {
 
   local dump_name="${1:-$DB_NAME}"; shift
 
-  local _included_tables=''
-  for table in "${included_tables//,/ }"; do
-    table=$(echo $table) # trim whitespaces
-    [ -n "$table" ] && _included_tables="$_included_tables --ignore-table='$DB_NAME.$table'"
-  done;
   local _excluded_tables=''
   for table in ${excluded_tables//,/ }; do
     table=$(echo $table) # trim whitespaces
-    [ -n "$table" ] && _excluded_tables="$_excluded_tables --ignore-table='$DB_NAME.$table'"
+    [ -n "$table" ] && _excluded_tables="$_excluded_tables --ignore-table=$DB_NAME.$table"
   done;
 
   [ -n "$included_tables" ] && echo "Included: $included_tables"
@@ -38,7 +33,7 @@ mysql_dump () {
   [ -n "$db_extra" ] && echo "db_extra: $db_extra"
   echo "other   : $@"
 
-  mysqldump "$@" $_included_tables $_excluded_tables $db_extra -h "$DB_HOST" -u "$DB_USER" --password="$DB_PASSWORD" "$DB_NAME" > "$_module_cache/$dump_name.sql" || exit $?
+  mysqldump -h "$DB_HOST" -u "$DB_USER" --password="$DB_PASSWORD" "$@" $db_extra $_excluded_tables "$DB_NAME" ${included_tables//,/ } > "$_module_cache/$dump_name.sql" || exit $?
 
   echo "END   mysql_dump"
 
