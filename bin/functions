@@ -43,7 +43,8 @@ backup_single_module() {
 }
 
 dupl() {
-  PASSPHRASE=$PASSPHRASE duplicity -v4 \
+  PASSPHRASE="$PASSPHRASE" FTP_PASSWORD="$FTP_PASSWORD" duplicity -v4 \
+  --gpg-options "--compress-algo=bzip2 --bzip2-compress-level=9" \
   --archive-dir="$MBKP_ARCHIVE" \
   --name "$module" "$@"
 }
@@ -56,13 +57,12 @@ do_backup() {
   # Append '/' if needed
   [[ "$(echo $backup_src | awk '$0=$NF' FS=)" == "/" ]] || backup_src="$backup_src/"
   
-  dupl cleanup "$backup_target"
-  dupl remove-older-than "$remove_older_than" "$backup_target"
+  dupl cleanup --force "$backup_target" # --extra-clean
+  dupl remove-all-but-n-full "$keep_last_n_backups" --force "$backup_target"
 
-  # FTP_PASSWORD=$FTP_PASSWORD
-  dupl ${volsize:+--volsize="$volsize"} \
-  --ssh-askpass --exclude-other-filesystems \
-  $SSH_OPTS \
+  dupl --ssh-askpass --exclude-if-present CACHEDIR.TAG --exclude-other-filesystems \
+  --asynchronous-upload \
+  ${volsize:+--volsize="$volsize"} $SSH_OPTS \
   --full-if-older-than $full_if_older_than \
   $includes $excludes \
   $extra "$backup_src" "$backup_target" || FAILED="$module"
@@ -125,7 +125,7 @@ init_module() {
   mbkp_target="$MBKP_BASE_TARGET"
   volsize="50"
   full_if_older_than="6M"
-  remove_older_than="12M"
+  keep_last_n_backups=3
   extra=''
   db_extra=''
 
@@ -165,7 +165,7 @@ init_module() {
   echo "Module target: $mbkp_full_target"
   echo "Volume size  : $volsize MB"
   echo "Full if older: $full_if_older_than"
-  echo "Remove older : $remove_older_than"
+  echo "Keep last backups: $keep_last_n_backups"
   echo "extra        : $extra"
   echo "db_extra     : $db_extra"
   echo '------------------------------------'
