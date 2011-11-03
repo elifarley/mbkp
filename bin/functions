@@ -20,7 +20,7 @@ mysql_dump () {
   echo "Host    : $DB_HOST"
   echo "Database: $DB_NAME"
 
-  local dump_name="${1:-$DB_NAME}"; shift
+  local dump_name="${1:-$DB_NAME.$module}"; shift
 
   local _excluded_tables=''
   for table in ${excluded_tables//,/ }; do
@@ -93,19 +93,26 @@ init_dir() {
   mkdir -p "$priv_dir" || exit $?
   cp -av $CMD_BASE/../priv.template/* "$priv_dir"/ || exit $?
   chmod -R go= "$priv_dir" || exit $?
+
+  local modules_dir="$(dirname $priv_dir)"
+  echo "init_dir: $modules_dir"
+  mkdir -p "$modules_dir" || exit $?
+  cp -av $CMD_BASE/../modules.template/* "$modules_dir"/ || exit $?
 }
 
 init() {
 
-  ((VERBOSE)) && echo "Calling mbackup-config.sh"
-  . "$CMD_BASE/../mbackup-config.sh" || exit 1
+  local mbkp_conf_file="$CMD_BASE/../mbkp.conf"
+  ((VERBOSE)) && echo "Calling $mbkp_conf_file"
+  . "$mbkp_conf_file" || exit 1
 
-  [ -s "$MBKP_CONFIG/mbackup-config.sh" ] && {
-    ((VERBOSE)) && echo "Calling $MBKP_CONFIG/mbackup-config.sh"
-    . "$MBKP_CONFIG/mbackup-config.sh" || exit 1
+  mbkp_conf_file="$MBKP_CONFIG/mbkp.conf"
+  [ -s "$mbkp_conf_file" ] && {
+    ((VERBOSE)) && echo "Calling $mbkp_conf_file"
+    . "$mbkp_conf_file" || exit 1
   }
 
-  local mbkp_priv_hook="$MBKP_CONFIG/priv/_mbackup.conf"
+  local mbkp_priv_hook="$MBKP_CONFIG/priv/mbkp-priv.conf"
   if [ -f "$mbkp_priv_hook" ]; then
     ((VERBOSE)) && echo "Calling $mbkp_priv_hook"
     . "$mbkp_priv_hook" || exit 1
