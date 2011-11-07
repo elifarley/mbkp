@@ -187,7 +187,7 @@ init_module() {
   }
 
   mbkp_full_target="$mbkp_target/$module"
-  resolved_src="$(readlink $mbkp_src)" && mbkp_src="$resolved_src"
+
   # Append '/' if needed
   [[ "$(echo $mbkp_src | awk '$0=$NF' FS=)" == "/" ]] || mbkp_src="$mbkp_src/"
 
