@@ -16,17 +16,22 @@ EXP_backup_modules() {
 }
 
 add_prefix() {
+  set -f
   local prefix="$1"; shift
   local result_var="$1"; shift
-  local items="$@"
+  local enclose="$1"; shift
+  # Test if $result_var should be used as a source of values
+  (($#)) && local items="$@" || local items="${!result_var}"
 
   local sep=' '
+  (($enclose)) && enclose="'" || enclose=''
   local result=''
   for item in ${items//,/ }; do
     item=$(echo $item) # trim whitespaces
-    [ -n "$item" ] && result="$result$sep$prefix$item"
+    [ -n "$item" ] && result="$result$sep$prefix$enclose$item$enclose"
   done;
   eval $result_var=\"$(echo $result)\"
+  set +f
 }
 
 mysql_dump() {
@@ -36,10 +41,10 @@ mysql_dump() {
 
   local dump_name="${1:-$DB_NAME.$module}"; shift
 
-  add_prefix "--ignore-table=$DB_NAME." _excluded_tables $excluded_tables
+  add_prefix "--ignore-table=$DB_NAME." _excluded_tables 0 $excluded_tables
 
-  [ -n "$included_tables" ] && echo "Included: $included_tables"
-  [ -n "$excluded_tables" ] && echo "Excluded: $excluded_tables"
+  [ -n "$included_tables" ] && echo 'Included tables:' && echo $included_tables
+  [ -n "$excluded_tables" ] && echo 'Excluded tables:' && echo $excluded_tables
   [ -n "$db_extra" ] && echo "db_extra: $db_extra"
   echo "other   : $@"
 
@@ -82,8 +87,6 @@ do_backup() {
 
   local backup_src="$1"; shift
   local backup_target="$1"; shift
-  # Append '/' if needed
-  [[ "$(echo $backup_src | awk '$0=$NF' FS=)" == "/" ]] || backup_src="$backup_src/"
   
   dupl cleanup --force "$backup_target" # --extra-clean
   dupl remove-all-but-n-full "$keep_last_n_backups" --force "$backup_target"
@@ -91,8 +94,7 @@ do_backup() {
   dupl --ssh-askpass --exclude-if-present CACHEDIR.TAG --exclude-other-filesystems \
   --asynchronous-upload \
   ${volsize:+--volsize="$volsize"} $SSH_OPTS \
-  --full-if-older-than $full_if_older_than \
-  $includes $excludes \
+  --full-if-older-than $full_if_older_than $file_selection \
   $extra "$backup_src" "$backup_target" || FAILED="$module"
 }
 
@@ -161,6 +163,8 @@ init_module() {
   volsize="50"
   full_if_older_than="6M"
   keep_last_n_backups=3
+  included_files=''
+  excluded_files=''
   extra=''
   DB_HOST='localhost'
   DB_NAME=''
@@ -184,23 +188,31 @@ init_module() {
 
   mbkp_full_target="$mbkp_target/$module"
   resolved_src="$(readlink $mbkp_src)" && mbkp_src="$resolved_src"
+  # Append '/' if needed
+  [[ "$(echo $mbkp_src | awk '$0=$NF' FS=)" == "/" ]] || mbkp_src="$mbkp_src/"
 
   [ -e "$_module_cache" ] || {
     ((VERBOSE)) && echo "Creating $_module_cache"
     mkdir "$_module_cache" || exit $?
   }
 
-  includes="$MBKP_CONFIG/modules/$module.files"
-  [ -s "$includes" ] && {
-    includes="--include-globbing-filelist $includes"
-    echo $includes
-  } || includes=''
+  add_prefix "$mbkp_src" included_files 0
+  add_prefix "--include " included_files 1
 
-  excludes="$MBKP_CONFIG/modules/$module.excludes"
-  [ -s "$excludes" ] && {
-    excludes="--exclude-globbing-filelist $excludes"
-    echo $excludes
-  } || excludes=''
+  add_prefix "$mbkp_src" excluded_files 0
+  add_prefix "--exclude " excluded_files 1
+
+  include_gfilelist="$MBKP_CONFIG/modules/$module.files"
+  [ -s "$include_gfilelist" ] && {
+    include_filelist="--include-globbing-filelist $include_gfilelist"
+  } || include_gfilelist=''
+
+  exclude_gfilelist="$MBKP_CONFIG/modules/$module.excludes"
+  [ -s "$exclude_gfilelist" ] && {
+    exclude_gfilelist="--exclude-globbing-filelist $exclude_gfilelist"
+  } || exclude_gfilelist=''
+
+  file_selection="$included_files $excluded_files $include_gfilelist $exclude_gfilelist"
 
   echo "Module source: $mbkp_src"
   echo "Module target: $mbkp_full_target"
@@ -208,6 +220,10 @@ init_module() {
   echo "Full if older: $full_if_older_than"
   echo "Keep last backups: $keep_last_n_backups"
   [ -n "$extra" ] && echo "extra        : $extra"
+  [ -n "$included_files" ] && echo "Included files:" && echo $included_files
+  [ -n "$excluded_files" ] && echo "Excluded files:" && echo $excluded_files
+  [ -n "$include_gfilelist" ] && echo $include_gfilelist
+  [ -n "$exclude_gfilelist" ] && echo $exclude_gfilelist
   echo '------------------------------------'
 
 }
@@ -217,12 +233,12 @@ pre_module_backup() {
   local pre_hook="$MBKP_CONFIG/modules/$module.pre"
   if [ -s "$pre_hook" ]; then
     echo "Calling: $pre_hook"
-    time . $pre_hook "$_module_cache" || exit $?
+    . $pre_hook "$_module_cache" || exit $?
   else
     ((VERBOSE)) && echo "### NOT CALLED: $pre_hook"
   fi
 
-  [ -n "$DB_NAME" ] && mysql_dump
+  [ -n "$DB_NAME" ] && time mysql_dump
 
 } # pre_module_backup
 
