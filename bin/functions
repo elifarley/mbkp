@@ -204,7 +204,7 @@ init_module() {
 
   include_gfilelist="$MBKP_CONFIG/modules/$module.files"
   [ -s "$include_gfilelist" ] && {
-    include_filelist="--include-globbing-filelist $include_gfilelist"
+    include_gfilelist="--include-globbing-filelist $include_gfilelist"
   } || include_gfilelist=''
 
   exclude_gfilelist="$MBKP_CONFIG/modules/$module.excludes"
