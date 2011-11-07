@@ -15,18 +15,28 @@ EXP_backup_modules() {
 
 }
 
-mysql_dump () {
+add_prefix() {
+  local prefix="$1"; shift
+  local result_var="$1"; shift
+  local items="$@"
+
+  local sep=' '
+  local result=''
+  for item in ${items//,/ }; do
+    item=$(echo $item) # trim whitespaces
+    [ -n "$item" ] && result="$result$sep$prefix$item"
+  done;
+  eval $result_var=\"$(echo $result)\"
+}
+
+mysql_dump() {
   echo "START mysql_dump"
   echo "Host    : $DB_HOST"
   echo "Database: $DB_NAME"
 
   local dump_name="${1:-$DB_NAME.$module}"; shift
 
-  local _excluded_tables=''
-  for table in ${excluded_tables//,/ }; do
-    table=$(echo $table) # trim whitespaces
-    [ -n "$table" ] && _excluded_tables="$_excluded_tables --ignore-table=$DB_NAME.$table"
-  done;
+  add_prefix "--ignore-table=$DB_NAME." _excluded_tables $excluded_tables
 
   [ -n "$included_tables" ] && echo "Included: $included_tables"
   [ -n "$excluded_tables" ] && echo "Excluded: $excluded_tables"
