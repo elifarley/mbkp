@@ -18,19 +18,19 @@ EXP_backup_modules() {
 add_prefix() {
   set -f
   local prefix="$1"; shift
+  local join_prefix_and_item="$1"; shift
   local result_var="$1"; shift
-  local enclose="$1"; shift
   # Test if $result_var should be used as a source of values
   (($#)) && local items="$@" || local items="${!result_var}"
 
-  local sep=' '
-  (($enclose)) && enclose="'" || enclose=''
-  local result=''
+  local result=()
   for item in ${items//,/ }; do
     item=$(echo $item) # trim whitespaces
-    [ -n "$item" ] && result="$result$sep$prefix$enclose$item$enclose"
+    [ -n "$item" ] && {
+	  (($join_prefix_and_item)) && result+=("$prefix$item") || result+=("$prefix" "$item")
+	}
   done;
-  eval $result_var=\"$(echo $result)\"
+  eval "$result_var=(${result[@]})"
   set +f
 }
 
@@ -41,14 +41,14 @@ mysql_dump() {
 
   local dump_name="${1:-$DB_NAME.$module}"; shift
 
-  add_prefix "--ignore-table=$DB_NAME." _excluded_tables 0 $excluded_tables
+  add_prefix "--ignore-table=$DB_NAME." 1 _excluded_tables $excluded_tables
 
   [ -n "$included_tables" ] && echo 'Included tables:' && echo $included_tables
-  [ -n "$excluded_tables" ] && echo 'Excluded tables:' && echo $excluded_tables
+  ((${#_excluded_tables[@]})) && echo "${#_excluded_tables[@]} excluded tables:" && echo $excluded_tables
   [ -n "$db_extra" ] && echo "db_extra: $db_extra"
   echo "other   : $@"
 
-  mysqldump -h "$DB_HOST" -u "$DB_USER" --password="$DB_PASSWORD" "$@" $db_extra $_excluded_tables "$DB_NAME" ${included_tables//,/ } > "$_module_cache/$dump_name.sql" || exit $?
+  mysqldump -h "$DB_HOST" -u "$DB_USER" --password="$DB_PASSWORD" "$@" $db_extra "${_excluded_tables[@]}" "$DB_NAME" ${included_tables//,/ } > "$_module_cache/$dump_name.sql" || exit $?
 
   echo "END   mysql_dump"
 
@@ -88,13 +88,11 @@ do_backup() {
   local backup_src="$1"; shift
   local backup_target="$1"; shift
   
-  dupl cleanup --force "$backup_target" # --extra-clean
   dupl remove-all-but-n-full "$keep_last_n_backups" --force "$backup_target"
+  dupl cleanup --force "$backup_target" # --extra-clean
 
-  dupl --ssh-askpass --exclude-if-present CACHEDIR.TAG --exclude-other-filesystems \
-  --asynchronous-upload \
-  ${volsize:+--volsize="$volsize"} $SSH_OPTS \
-  --full-if-older-than $full_if_older_than $file_selection \
+  dupl --ssh-askpass $SSH_OPTS --asynchronous-upload ${volsize:+--volsize="$volsize"} \
+  --full-if-older-than $full_if_older_than "${file_selection[@]}" \
   $extra "$backup_src" "$backup_target" || FAILED="$module"
 }
 
@@ -163,8 +161,8 @@ init_module() {
   volsize="50"
   full_if_older_than="6M"
   keep_last_n_backups=3
-  included_files=''
-  excluded_files=''
+  included_files=()
+  excluded_files=()
   extra=''
   DB_HOST='localhost'
   DB_NAME=''
@@ -196,11 +194,11 @@ init_module() {
     mkdir "$_module_cache" || exit $?
   }
 
-  add_prefix "$mbkp_src" included_files 0
-  add_prefix "--include " included_files 1
+  add_prefix "$mbkp_src" 1 included_files
+  add_prefix "--include" 0 included_files "${included_files[@]}"
 
-  add_prefix "$mbkp_src" excluded_files 0
-  add_prefix "--exclude " excluded_files 1
+  add_prefix "$mbkp_src" 1 excluded_files
+  add_prefix "--exclude" 0 excluded_files "${excluded_files[@]}"
 
   include_gfilelist="$MBKP_CONFIG/modules/$module.files"
   [ -s "$include_gfilelist" ] && {
@@ -212,18 +210,21 @@ init_module() {
     exclude_gfilelist="--exclude-globbing-filelist $exclude_gfilelist"
   } || exclude_gfilelist=''
 
-  file_selection="$included_files $excluded_files $include_gfilelist $exclude_gfilelist"
+  file_selection=(--exclude-if-present CACHEDIR.TAG --exclude-other-filesystems \
+    "${included_files[@]}" "${excluded_files[@]}" $include_gfilelist $exclude_gfilelist)
 
+  set -f
   echo "Module source: $mbkp_src"
   echo "Module target: $mbkp_full_target"
   echo "Volume size  : $volsize MB"
   echo "Full if older: $full_if_older_than"
   echo "Keep last backups: $keep_last_n_backups"
   [ -n "$extra" ] && echo "extra        : $extra"
-  [ -n "$included_files" ] && echo "Included files:" && echo $included_files
-  [ -n "$excluded_files" ] && echo "Excluded files:" && echo $excluded_files
+  ((${#included_files[@]})) && echo "Included files:" && echo ${included_files[@]}
+  ((${#excluded_files[@]})) && echo "Excluded files:" && echo ${excluded_files[@]}
   [ -n "$include_gfilelist" ] && echo $include_gfilelist
   [ -n "$exclude_gfilelist" ] && echo $exclude_gfilelist
+  set +f
   echo '------------------------------------'
 
 }
