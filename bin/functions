@@ -161,6 +161,8 @@ init_module() {
   volsize="50"
   full_if_older_than="6M"
   keep_last_n_backups=3
+  canonicalize_source=0
+  excludes_first=0
   included_files=()
   excluded_files=()
   extra=''
@@ -184,10 +186,11 @@ init_module() {
     . "$module_hook"
   }
 
-  mbkp_full_target="$mbkp_target/$module"
-
+  ((canonicalize_source)) && mbkp_src="$(readlink --canonicalize-missing $mbkp_src)"
   # Append '/' if needed
-  [[ "$(echo $mbkp_src | awk '$0=$NF' FS=)" == "/" ]] || mbkp_src="$mbkp_src/"
+  [[ $mbkp_src == */ ]] || mbkp_src="$mbkp_src/"
+
+  mbkp_full_target="$mbkp_target/$module"
 
   [ -e "$_module_cache" ] || {
     ((VERBOSE)) && echo "Creating $_module_cache"
@@ -210,8 +213,9 @@ init_module() {
     exclude_gfilelist="--exclude-globbing-filelist $exclude_gfilelist"
   } || exclude_gfilelist=''
 
-  file_selection=(--exclude-if-present CACHEDIR.TAG --exclude-other-filesystems \
-    "${included_files[@]}" "${excluded_files[@]}" $include_gfilelist $exclude_gfilelist)
+  file_selection=(--exclude-if-present CACHEDIR.TAG --exclude-other-filesystems)
+  ((excludes_first)) && file_selection+=("${excluded_files[@]}" "${included_files[@]}") || file_selection+=("${included_files[@]}" "${excluded_files[@]}")
+  file_selection+=($include_gfilelist $exclude_gfilelist)
 
   set -f
   echo "Module source: $mbkp_src"
