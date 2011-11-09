@@ -158,6 +158,18 @@ init() {
 
 }
 
+process_file_list_item() {
+
+  local filespec="$1"
+  local item_type="${filespec:0:1}"
+  local command
+  [[ $item_type == '-' ]] && command='--exclude' || command='--include'
+  [[ $item_type == '-' || $item_type == '+' ]] && filespec="${filespec:1}"
+  set -f
+  echo "$command '$mbkp_src$filespec'"
+  set +f
+}
+
 init_module() {
   FAILED=''
 
@@ -169,6 +181,7 @@ init_module() {
   full_if_older_than="6M"
   keep_last_n_backups=3
   canonicalize_source=0
+  file_list=''
   excludes_first=0
   included_files=()
   excluded_files=()
@@ -204,6 +217,8 @@ init_module() {
     mkdir "$_module_cache" || exit $?
   }
 
+  add_prefix "#!process_file_list_item" file_list
+
   add_prefix "$mbkp_src" 1 included_files
   add_prefix "--include" 0 included_files "${included_files[@]}"
 
@@ -220,7 +235,7 @@ init_module() {
     exclude_gfilelist="--exclude-globbing-filelist $exclude_gfilelist"
   } || exclude_gfilelist=''
 
-  file_selection=(--exclude-if-present CACHEDIR.TAG --exclude-other-filesystems)
+  file_selection=(--exclude-if-present CACHEDIR.TAG --exclude-other-filesystems ${file_list[@]})
   ((excludes_first)) && file_selection+=("${excluded_files[@]}" "${included_files[@]}") || file_selection+=("${included_files[@]}" "${excluded_files[@]}")
   file_selection+=($include_gfilelist $exclude_gfilelist)
 
@@ -231,6 +246,7 @@ init_module() {
   echo "Full if older: $full_if_older_than"
   echo "Keep last backups: $keep_last_n_backups"
   [ -n "$extra" ] && echo "extra        : $extra"
+  ((${#file_list[@]})) && echo "File list    :" && echo ${file_list[@]}
   ((${#included_files[@]})) && echo "Included files:" && echo ${included_files[@]}
   ((${#excluded_files[@]})) && echo "Excluded files:" && echo ${excluded_files[@]}
   [ -n "$include_gfilelist" ] && echo $include_gfilelist
