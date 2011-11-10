@@ -33,7 +33,7 @@ add_prefix() {
         # If calling $prefix gives an error, skip this item
         _prefix=$($prefix $item) && result+=($_prefix)
       else
-        (($join_prefix_and_item)) && result+=("$_prefix$item") || result+=("$_prefix" "$item")
+        (($join_prefix_and_item)) && result+=("$prefix$item") || result+=("$prefix" "$item")
       fi
     }
   done;
