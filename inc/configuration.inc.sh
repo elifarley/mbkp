@@ -1,15 +1,15 @@
-init_dir() {
-  local priv_dir="$(dirname $1)"
-  echo "init_dir: $priv_dir"
+init_config_dir() {
   MBKP_FIRST_RUN=1
+  local priv_dir="$MBKP_CONFIG_BASE/priv"
+  echo "init_config_dir: $priv_dir"
   mkdir -p "$priv_dir" || exit $?
-  cp -av --no-clobber $CMD_BASE/../priv.template/* "$priv_dir"/ || exit $?
+  cp -av --no-clobber $CMD_BASE/priv.template/* "$priv_dir" || exit $?
   chmod -R go= "$priv_dir" || exit $?
 
-  local modules_dir="$(dirname $priv_dir)"
-  echo "init_dir: $modules_dir"
+  local modules_dir="$MBKP_CONFIG_BASE/modules"
+  echo "init_config_dir: $modules_dir"
   mkdir -p "$modules_dir" || exit $?
-  cp -av --no-clobber $CMD_BASE/../modules.template/* "$modules_dir"/ || exit $?
+  cp -av --no-clobber $CMD_BASE/modules.template/* "$modules_dir"/ || exit $?
 }
 
 init_config() {
@@ -19,22 +19,22 @@ init_config() {
   . "$mbkp_conf_file" || exit 1
 
   mbkp_conf_file="$MBKP_CONFIG_BASE/mbkp.conf"
-  [ -s "$mbkp_conf_file" ] && {
+  if [ -f "$mbkp_conf_file" ]; then
     ((VERBOSE)) && echo "Calling $mbkp_conf_file"
     . "$mbkp_conf_file" || exit 1
-  }
-
-  local mbkp_priv_hook="$MBKP_CONFIG_BASE/priv/mbkp.conf"
-  if [ -f "$mbkp_priv_hook" ]; then
-    ((VERBOSE)) && echo "Calling $mbkp_priv_hook"
-    . "$mbkp_priv_hook" || exit 1
   else
-    init_dir "$mbkp_priv_hook"
+    init_config_dir "$mbkp_conf_file"
   fi
 
   ((MBKP_FIRST_RUN)) && {
-    echo "Please edit the file '$mbkp_priv_hook' and try again."
+    echo "Please edit the file '$mbkp_conf_file' and try again."
     exit 1
+  }
+
+  local mbkp_priv_hook="$MBKP_CONFIG_BASE/priv/mbkp.conf"
+  [ -f "$mbkp_priv_hook" ] && {
+    ((VERBOSE)) && echo "Calling $mbkp_priv_hook"
+    . "$mbkp_priv_hook" || exit 1
   }
 
   [ -d "$MBKP_MODULE_CACHE_BASE" ] || {
