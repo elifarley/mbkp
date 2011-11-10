@@ -99,8 +99,8 @@ do_backup() {
   dupl cleanup --force "$backup_target" # --extra-clean
 
   dupl --ssh-askpass $SSH_OPTS --asynchronous-upload ${volsize:+--volsize="$volsize"} \
-  --full-if-older-than $full_if_older_than "${file_selection[@]}" \
-  $extra "$backup_src" "$backup_target" || FAILED="$module"
+  --full-if-older-than $full_if_older_than $extra "${file_selection[@]}" \
+  "$backup_src" "$backup_target" || FAILED="$module"
 }
 
 init_dir() {
@@ -236,7 +236,7 @@ init_module() {
   } || exclude_gfilelist=''
 
   set -f
-  file_selection=(--exclude-if-present CACHEDIR.TAG --exclude-other-filesystems ${file_list[@]})
+  file_selection=(--exclude-if-present CACHEDIR.TAG ${file_list[@]})
   ((excludes_first)) && file_selection+=("${excluded_files[@]}" "${included_files[@]}") || file_selection+=("${included_files[@]}" "${excluded_files[@]}")
   file_selection+=($include_gfilelist $exclude_gfilelist)
 
