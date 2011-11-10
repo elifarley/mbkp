@@ -1,14 +1,13 @@
 EXP_backup_modules() {
-  init
-  local failed_modules=''
+  local failed_modules=()
   for module in "$@"; do
     backup_single_module "$module"
-    [ -z "$FAILED" ] || failed_modules="$failed_modules $FAILED"
+    [ -z "$FAILED" ] || failed_modules+=("$FAILED")
   done
 
   [ -z "$failed_modules" ] || {
     echo "#################################################################"
-    echo "############################# FAILED MODULES: '$failed_modules' !"
+    echo "############################# FAILED MODULES: '${failed_modules[@]}' !"
     echo "#################################################################"
     exit 1
   }
@@ -117,7 +116,7 @@ init_dir() {
   cp -av $CMD_BASE/../modules.template/* "$modules_dir"/ || exit $?
 }
 
-init() {
+init_config() {
 
   local mbkp_conf_file="$CMD_BASE/../mbkp.conf"
   ((VERBOSE)) && echo "Calling $mbkp_conf_file"
@@ -129,7 +128,7 @@ init() {
     . "$mbkp_conf_file" || exit 1
   }
 
-  local mbkp_priv_hook="$MBKP_CONFIG_BASE/priv/mbkp-priv.conf"
+  local mbkp_priv_hook="$MBKP_CONFIG_BASE/priv/mbkp.conf"
   if [ -f "$mbkp_priv_hook" ]; then
     ((VERBOSE)) && echo "Calling $mbkp_priv_hook"
     . "$mbkp_priv_hook" || exit 1
@@ -171,28 +170,10 @@ process_file_list_item() {
 }
 
 init_module() {
+
   FAILED=''
 
-  # Variables that can be overriden on module config files
-  module_cache="$MBKP_MODULE_CACHE_BASE/$module"
-  mbkp_src="$module_cache"
-  mbkp_target="$MBKP_BASE_TARGET"
-  volsize="50"
-  full_if_older_than="6M"
-  keep_last_n_backups=3
-  canonicalize_source=0
-  file_list=''
-  excludes_first=0
-  included_files=()
-  excluded_files=()
-  extra=''
-  DB_HOST='localhost'
-  DB_NAME=''
-  DB_USER='mbkp'
-  DB_PASSWORD=''
-  included_tables=''
-  excluded_tables=''
-  db_extra=''
+  init_config
 
   local module_hook="$MBKP_CONFIG_BASE/priv/$module.conf"
   [ -f "$module_hook" ] && {
@@ -254,7 +235,7 @@ init_module() {
   set +f
   echo '------------------------------------'
 
-}
+} # init_module
 
 pre_module_backup() {
 
