@@ -37,7 +37,7 @@ EXP_backup_modules() {
 EXP_status() {
   module="$1"; shift
   init_module
-  dupl -v8 --dry-run "${file_selection[@]}" "$@" "$mbkp_src" "$mbkp_full_target"
+  dupl -v8 --dry-run "${_file_selection[@]}" "$@" "$mbkp_src" "$mbkp_full_target"
 }
 
 EXP_list() {
@@ -55,7 +55,7 @@ EXP_list() {
 EXP_verify() {
   module="$1"; shift
   init_module
-  dupl verify -v8 "${file_selection[@]}" "$@" "$mbkp_full_target" "$mbkp_src"
+  dupl verify -v8 "${_file_selection[@]}" "$@" "$mbkp_full_target" "$mbkp_src"
 }
 
 EXP_restore() {
