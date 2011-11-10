@@ -1,10 +1,11 @@
 #!/bin/bash
 
 CMD_BASE="$(readlink -m $0)" || CMD_BASE="$0"; CMD_BASE="$(dirname $CMD_BASE)"
-. "$CMD_BASE/base.inc"
-. "$CMD_BASE/top-level-functions.inc"
-. "$CMD_BASE/functions"
-. "$CMD_BASE/mysql.inc"
+MBKP_CONF_FILE="$CMD_BASE/mbkp.conf"
+. "$CMD_BASE/inc/base.inc.sh"
+. "$CMD_BASE/inc/top-level-functions.inc.sh"
+. "$CMD_BASE/inc/misc.inc.sh.sh"
+. "$CMD_BASE/inc/mysql.inc.sh"
 
 [ "$#" -lt 2 ] && usage
 
@@ -14,19 +15,19 @@ main() {
 
   local params=()
   local cmd="$1"; shift
-  
+
   while [ $# -gt 0 ]; do
     case "$1" in
       -v|--verbose)
         VERBOSE="$2"; shift
         ;;
-  	*)
+      *)
         params+=("$1")
-  	  ;;
+      ;;
     esac
     shift
   done
-  
+
   case "$cmd" in
     backup)
       EXP_backup_modules "${params[@]}"
@@ -48,7 +49,7 @@ main() {
       ;;
     *)
       echo "mbkp: unknown command '$cmd'"
-  	usage
+      usage
       ;;
   esac
 
