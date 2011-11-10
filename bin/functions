@@ -1,63 +1,7 @@
-EXP_backup_modules() {
-  local failed_modules=()
-  for module in "$@"; do
-    backup_single_module "$module"
-    [ -z "$FAILED" ] || failed_modules+=("$FAILED")
-  done
-
-  [ -z "$failed_modules" ] || {
-    echo "#################################################################"
-    echo "############################# FAILED MODULES: '${failed_modules[@]}' !"
-    echo "#################################################################"
-    exit 1
-  }
-
-}
-
-add_prefix() {
-  set -f
-  local prefix="$1"; shift
-  local prefix_is_callable=0; [[ ${prefix:0:2} == '#!' ]] && { prefix_is_callable=1; prefix="${prefix:2}"; }
-  local join_prefix_and_item=0; ((prefix_is_callable)) || { join_prefix_and_item="$1"; shift; }
-  local result_var="$1"; shift
-  # Test if $result_var should be used as a source of values
-  (($#)) && local items="$@" || local items="${!result_var}"
-
-  local result=()
-  local _prefix=''
-  for item in ${items//,/ }; do
-    item=$(echo $item) # trim whitespaces
-    [ -n "$item" ] && {
-      if ((prefix_is_callable)); then
-        # If calling $prefix gives an error, skip this item
-        _prefix=$($prefix $item) && result+=($_prefix)
-      else
-        (($join_prefix_and_item)) && result+=("$prefix$item") || result+=("$prefix" "$item")
-      fi
-    }
-  done;
-  eval "$result_var=(${result[@]})"
-  set +f
-}
-
-mysql_dump() {
-  echo "START mysql_dump"
-  echo "Host    : $DB_HOST"
-  echo "Database: $DB_NAME"
-
-  local dump_name="${1:-$DB_NAME.$module}"; shift
-
-  add_prefix "--ignore-table=$DB_NAME." 1 _excluded_tables $excluded_tables
-
-  [ -n "$included_tables" ] && echo 'Included tables:' && echo $included_tables
-  ((${#_excluded_tables[@]})) && echo "${#_excluded_tables[@]} excluded tables:" && echo $excluded_tables
-  [ -n "$db_extra" ] && echo "db_extra: $db_extra"
-  echo "other   : $@"
-
-  mysqldump -h "$DB_HOST" -u "$DB_USER" --password="$DB_PASSWORD" "$@" $db_extra "${_excluded_tables[@]}" "$DB_NAME" ${included_tables//,/ } > "$module_cache/$dump_name.sql" || exit $?
-
-  echo "END   mysql_dump"
-
+dupl() {
+  PASSPHRASE="$PASSPHRASE" FTP_PASSWORD="$FTP_PASSWORD" duplicity \
+  --archive-dir="$MBKP_ARCHIVE" --name "$module" --ssh-askpass $SSH_OPTS \
+  "$@"
 }
 
 backup_single_module() {
@@ -79,13 +23,7 @@ backup_single_module() {
     echo "##################################################"
   }
 
-}
-
-dupl() {
-  PASSPHRASE="$PASSPHRASE" FTP_PASSWORD="$FTP_PASSWORD" duplicity \
-  --archive-dir="$MBKP_ARCHIVE" --name "$module" --ssh-askpass $SSH_OPTS \
-  "$@"
-}
+} # backup_single_module
 
 do_backup() {
   # do_backup src target
@@ -100,7 +38,7 @@ do_backup() {
   --asynchronous-upload ${volsize:+--volsize="$volsize"} \
   --full-if-older-than $full_if_older_than $extra "${_file_selection[@]}" \
   "$backup_src" "$backup_target" || FAILED="$module"
-}
+} # do_backup
 
 init_dir() {
   local priv_dir="$(dirname $1)"
@@ -155,7 +93,7 @@ init_config() {
     }
   }
 
-}
+} # init_config
 
 process_file_list_item() {
 

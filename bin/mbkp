@@ -1,0 +1,59 @@
+#!/bin/bash
+
+CMD_BASE="$(readlink -m $0)" || CMD_BASE="$0"; CMD_BASE="$(dirname $CMD_BASE)"
+. "$CMD_BASE/base.inc"
+. "$CMD_BASE/top-level-functions.inc"
+. "$CMD_BASE/functions"
+. "$CMD_BASE/mysql.inc"
+
+[ "$#" -lt 2 ] && usage
+
+VERBOSE=0
+
+main() {
+
+  local params=()
+  local cmd="$1"; shift
+  
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      -v|--verbose)
+        VERBOSE="$2"; shift
+        ;;
+  	*)
+        params+=("$1")
+  	  ;;
+    esac
+    shift
+  done
+  
+  case "$cmd" in
+    backup)
+      EXP_backup_modules "${params[@]}"
+      ;;
+    status)
+      EXP_status "${params[@]}"
+      ;;
+    list)
+      EXP_list "${params[@]}"
+      ;;
+    verify)
+      EXP_verify "${params[@]}"
+      ;;
+    restore)
+      EXP_restore "${params[@]}"
+      ;;
+    'help')
+      EXP_help "${params[@]}"
+      ;;
+    *)
+      echo "mbkp: unknown command '$cmd'"
+  	usage
+      ;;
+  esac
+
+} # main
+
+main "$@"
+
+exit 0
