@@ -45,13 +45,13 @@ init_dir() {
   echo "init_dir: $priv_dir"
   MBKP_FIRST_RUN=1
   mkdir -p "$priv_dir" || exit $?
-  cp -av $CMD_BASE/../priv.template/* "$priv_dir"/ || exit $?
+  cp -av --no-clobber $CMD_BASE/../priv.template/* "$priv_dir"/ || exit $?
   chmod -R go= "$priv_dir" || exit $?
 
   local modules_dir="$(dirname $priv_dir)"
   echo "init_dir: $modules_dir"
   mkdir -p "$modules_dir" || exit $?
-  cp -av $CMD_BASE/../modules.template/* "$modules_dir"/ || exit $?
+  cp -av --no-clobber $CMD_BASE/../modules.template/* "$modules_dir"/ || exit $?
 }
 
 init_config() {
