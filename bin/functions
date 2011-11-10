@@ -235,11 +235,11 @@ init_module() {
     exclude_gfilelist="--exclude-globbing-filelist $exclude_gfilelist"
   } || exclude_gfilelist=''
 
+  set -f
   file_selection=(--exclude-if-present CACHEDIR.TAG --exclude-other-filesystems ${file_list[@]})
   ((excludes_first)) && file_selection+=("${excluded_files[@]}" "${included_files[@]}") || file_selection+=("${included_files[@]}" "${excluded_files[@]}")
   file_selection+=($include_gfilelist $exclude_gfilelist)
 
-  set -f
   echo "Module source: $mbkp_src"
   echo "Module target: $mbkp_full_target"
   echo "Volume size  : $volsize MB"

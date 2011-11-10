@@ -7,4 +7,5 @@ module="$1"; shift
 init
 init_module
 
+set -f
 echo "status:" && dupl -v8 --dry-run "${file_selection[@]}" "$@" "$mbkp_src" "$mbkp_full_target"
