@@ -4,7 +4,7 @@ CMD_BASE="$(readlink -m $0)" || CMD_BASE="$0"; CMD_BASE="$(dirname $CMD_BASE)"
 MBKP_CONF_FILE="$CMD_BASE/mbkp.conf"
 . "$CMD_BASE/inc/base.inc.sh"
 . "$CMD_BASE/inc/top-level-functions.inc.sh"
-. "$CMD_BASE/inc/misc.inc.sh.sh"
+. "$CMD_BASE/inc/misc.inc.sh"
 . "$CMD_BASE/inc/mysql.inc.sh"
 
 [ "$#" -lt 2 ] && usage
@@ -29,22 +29,22 @@ main() {
   done
 
   case "$cmd" in
-    backup)
+    b|backup)
       EXP_backup_modules "${params[@]}"
       ;;
-    status)
+    s|status)
       EXP_status "${params[@]}"
       ;;
-    list)
+    l|list)
       EXP_list "${params[@]}"
       ;;
-    verify)
+    v|verify)
       EXP_verify "${params[@]}"
       ;;
-    restore)
+    r|restore)
       EXP_restore "${params[@]}"
       ;;
-    'help')
+    h|'help')
       EXP_help "${params[@]}"
       ;;
     *)

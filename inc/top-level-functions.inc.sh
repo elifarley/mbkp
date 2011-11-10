@@ -14,6 +14,10 @@ usage() {
   exit 1
 }
 
+EXP_help() {
+  echo "Help on command '$1': To be implemented"
+}
+
 EXP_backup_modules() {
   local failed_modules=()
   for module in "$@"; do
