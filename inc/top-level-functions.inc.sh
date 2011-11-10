@@ -42,8 +42,14 @@ EXP_status() {
 
 EXP_list() {
   module="$1"; shift
-  init_module
-  dupl list-current-files -v8 "$@" "$mbkp_full_target"
+  if [[ -z "$module" ]]; then
+    init_config
+    du -hs $MBKP_ARCHIVE/* | awk -F/ '{ print $NF,$1 }'
+  else
+    init_module
+    dupl list-current-files -v8 "$@" "$mbkp_full_target"
+  fi
+
 }
 
 EXP_verify() {

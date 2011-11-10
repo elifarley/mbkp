@@ -2,12 +2,13 @@
 
 CMD_BASE="$(readlink -m $0)" || CMD_BASE="$0"; CMD_BASE="$(dirname $CMD_BASE)"
 MBKP_CONF_FILE="$CMD_BASE/mbkp.conf"
+. "$CMD_BASE/inc/configuration.inc.sh"
 . "$CMD_BASE/inc/base.inc.sh"
 . "$CMD_BASE/inc/top-level-functions.inc.sh"
 . "$CMD_BASE/inc/misc.inc.sh"
 . "$CMD_BASE/inc/mysql.inc.sh"
 
-[ "$#" -lt 2 ] && usage
+[ "$#" -lt 1 ] && usage
 
 VERBOSE=0
 
