@@ -2,12 +2,15 @@
 
 CMD_BASE="$(readlink -m $0)" || CMD_BASE="$0"; CMD_BASE="$(dirname $CMD_BASE)"
 MBKP_CONF_FILE="$CMD_BASE/mbkp.conf"
-. "$CMD_BASE/inc/configuration.inc.sh"
-. "$CMD_BASE/inc/base.inc.sh"
-. "$CMD_BASE/inc/top-level-functions.inc.sh"
-. "$CMD_BASE/inc/misc.inc.sh"
-. "$CMD_BASE/inc/mysql.inc.sh"
-. "$CMD_BASE/inc/help.inc.sh"
+_INCLUDES=(
+  configuration
+  base
+  top-level-functions
+  misc
+  mysql
+  help
+)
+for item in "${_INCLUDES[@]}"; do . "$CMD_BASE/inc/$item.inc.sh"; done
 
 (($#)) || usage
 
