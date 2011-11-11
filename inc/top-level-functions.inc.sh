@@ -23,7 +23,6 @@ EXP_status() {
 }
 
 EXP_list() {
-  (($#)) || EXP_list_usage
   module="$1"; shift
   if [[ -z "$module" ]]; then
     init_config

@@ -33,24 +33,24 @@ EXP_backup_modules_usage() {
 
 EXP_status_usage() {
   echo "Usage:"
-  echo "$0 status <module>"
+  echo "$0 status <module> [<param> ...]"
   exit 1
 }
 
 EXP_list_usage() {
   echo "Usage:"
-  echo "$0 list <module>"
+  echo "$0 list [<module>] [<param> ...]"
   exit 1
 }
 
 EXP_verify_usage() {
   echo "Usage:"
-  echo "$0 verify <module>"
+  echo "$0 verify <module> [<param> ...]"
   exit 1
 }
 
 EXP_restore_usage() {
   echo "Usage:"
-  echo "$0 restore <module>"
+  echo "$0 restore <module> [<param> ...]"
   exit 1
 }
