@@ -1,0 +1,52 @@
+#============================================================================
+# Default values in comments
+#============================================================================
+
+SITE_ROOT="$HOME/my.site.org"
+
+# SSH_OPTS='--ssh-options="-oIdentityFile=/home/USER/.ssh/id_dsa-nopw"'
+# export RSYNC_RSH="$(which rsync) --protocol=29"
+
+# MBKP_DATA_BASE="$HOME/.local/share/mbkp"
+
+# MBKP_ARCHIVE="$MBKP_DATA_BASE/cache/duplicity-archive"
+# MBKP_MODULE_CACHE_BASE="$MBKP_DATA_BASE/cache/modules"
+
+# mbkp_src="$module_cache"
+
+## RSYNC URL example: mbkp_target="rsync://user@backup.host.com"
+## SFTP  URL example: mbkp_target="ssh://user@backup.host.com/mbkp-modules"
+# mbkp_target="file://$MBKP_LOCAL_BACKUPS_BASE"
+
+# canonicalize_source=0
+# volsize="50"
+# full_if_older_than="6M"
+# keep_last_n_backups=3
+# file_list=''
+# excludes_first=0
+# included_files=()
+# excluded_files=()
+# extra=''
+
+# DB_HOST='localhost'
+# DB_NAME=''
+# DB_USER='mbkp'
+# DB_PASSWORD=''
+# included_tables=''
+# excluded_tables=''
+# db_extra=''
+
+
+# Please choose the default passwords you want to use
+# for protecting your backups.
+
+set +x
+
+# Default Gpg passphrase for Duplicity
+PASSPHRASE='my-passphrase'
+
+# Default password for ssh / sftp
+FTP_PASSWORD="my-password"
+
+# Delete the line below in order to use mbkp:
+MBKP_FIRST_RUN=1

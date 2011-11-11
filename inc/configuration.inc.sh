@@ -1,15 +1,17 @@
 init_config_dir() {
   MBKP_FIRST_RUN=1
-  local priv_dir="$MBKP_CONFIG_BASE/priv"
-  echo "init_config_dir: $priv_dir"
-  mkdir -p "$priv_dir" || exit $?
-  cp -av --no-clobber $CMD_BASE/priv.template/* "$priv_dir" || exit $?
-  chmod -R go= "$priv_dir" || exit $?
-
   local modules_dir="$MBKP_CONFIG_BASE/modules"
   echo "init_config_dir: $modules_dir"
   mkdir -p "$modules_dir" || exit $?
-  cp -av --no-clobber $CMD_BASE/modules.template/* "$modules_dir"/ || exit $?
+  cp -a --no-clobber $CMD_BASE/modules.template/* "$modules_dir"/ || exit $?
+
+  local priv_dir="$MBKP_CONFIG_BASE/priv"
+  echo "init_config_dir: $priv_dir"
+  mkdir -p "$priv_dir" || exit $?
+  chmod -R go= "$priv_dir" || exit $?
+
+  cp -av --no-clobber $CMD_BASE/.mbkp.conf.user.template "$MBKP_CONFIG_BASE"/mbkp.conf || exit $?
+
 }
 
 init_config() {
