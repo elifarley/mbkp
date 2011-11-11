@@ -7,8 +7,9 @@ MBKP_CONF_FILE="$CMD_BASE/mbkp.conf"
 . "$CMD_BASE/inc/top-level-functions.inc.sh"
 . "$CMD_BASE/inc/misc.inc.sh"
 . "$CMD_BASE/inc/mysql.inc.sh"
+. "$CMD_BASE/inc/help.inc.sh"
 
-[ "$#" -lt 1 ] && usage
+(($#)) || usage
 
 VERBOSE=0
 
@@ -17,7 +18,7 @@ main() {
   local params=()
   local cmd="$1"; shift
 
-  while [ $# -gt 0 ]; do
+  while (($#)); do
     case "$1" in
       -v|--verbose)
         VERBOSE="$2"; shift

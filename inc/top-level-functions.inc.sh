@@ -1,24 +1,5 @@
-usage() {
-  echo "MBKP - Modular Backup"
-  echo "Usage:"
-  echo "$0 <command> [<param1> <param2> ...]"
-  echo
-  echo "Basic commands:"
-  echo
-  echo "backup	perform a full or incremental backup"
-  echo "status	show changed files in the working directory"
-  echo "list	show all files in backup"
-  echo "verify	verify the integrity of the repository"
-  echo "restore	restore a backup"
-  echo "help	show help on a given command"
-  exit 1
-}
-
-EXP_help() {
-  echo "Help on command '$1': To be implemented"
-}
-
 EXP_backup_modules() {
+  (($#)) || EXP_backup_modules_usage
   local failed_modules=()
   for module in "$@"; do
     backup_single_module "$module"
@@ -35,12 +16,14 @@ EXP_backup_modules() {
 }
 
 EXP_status() {
+  (($#)) || EXP_status_usage
   module="$1"; shift
   init_module
   dupl -v8 --dry-run "${_file_selection[@]}" "$@" "$mbkp_src" "$mbkp_full_target"
 }
 
 EXP_list() {
+  (($#)) || EXP_list_usage
   module="$1"; shift
   if [[ -z "$module" ]]; then
     init_config
@@ -53,12 +36,14 @@ EXP_list() {
 }
 
 EXP_verify() {
+  (($#)) || EXP_verify_usage
   module="$1"; shift
   init_module
   dupl verify -v8 "${_file_selection[@]}" "$@" "$mbkp_full_target" "$mbkp_src"
 }
 
 EXP_restore() {
+  (($#)) || EXP_restore_usage
   module="$1"; shift
   init_module
   dupl restore -v8 "$mbkp_full_target" "$@"
