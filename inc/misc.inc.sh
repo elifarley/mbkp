@@ -6,13 +6,13 @@ dupl() {
 
 backup_single_module() {
 
-  module="$1"; shift
+  local module="$1"; shift
 
   echo "=================================================="
   echo "Backup STARTED for module $module"
   echo "=================================================="
 
-  init_module
+  init_module "$module"
   pre_module_backup
   do_backup "$mbkp_src" "$mbkp_full_target"
   post_module_backup

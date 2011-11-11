@@ -17,8 +17,7 @@ EXP_backup_modules() {
 
 EXP_status() {
   (($#)) || EXP_status_usage
-  module="$1"; shift
-  init_module
+  init_module "$1"; shift
   dupl -v8 --dry-run "${_file_selection[@]}" "$@" "$mbkp_src" "$mbkp_full_target"
 }
 
@@ -28,7 +27,7 @@ EXP_list() {
     init_config
     du -hs $MBKP_ARCHIVE/* | awk -F/ '{ print $NF,$1 }'
   else
-    init_module
+    init_module "$module"
     dupl list-current-files -v8 "$@" "$mbkp_full_target"
   fi
 
@@ -36,14 +35,12 @@ EXP_list() {
 
 EXP_verify() {
   (($#)) || EXP_verify_usage
-  module="$1"; shift
-  init_module
+  init_module "$1"; shift
   dupl verify -v8 "${_file_selection[@]}" "$@" "$mbkp_full_target" "$mbkp_src"
 }
 
 EXP_restore() {
   (($#)) || EXP_restore_usage
-  module="$1"; shift
-  init_module
+  init_module "$1"; shift
   dupl restore -v8 "$mbkp_full_target" "$@"
 }

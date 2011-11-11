@@ -54,3 +54,9 @@ EXP_restore_usage() {
   echo "$0 restore <module> [<param> ...]"
   exit 1
 }
+
+module_not_found() {
+  echo "Modulo not found: $module"
+  echo "Please create the file '$MBKP_CONFIG_BASE/$module.conf' or '$MBKP_CONFIG_BASE/priv/$module.conf'"
+  exit 1
+}

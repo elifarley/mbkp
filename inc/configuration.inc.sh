@@ -18,25 +18,25 @@ init_config() {
 
   local mbkp_conf_file="$MBKP_CONF_FILE"
   ((VERBOSE)) && echo "Calling $mbkp_conf_file"
-  . "$mbkp_conf_file" || exit 1
+  . "$mbkp_conf_file" || exit $?
 
   mbkp_conf_file="$MBKP_CONFIG_BASE/mbkp.conf"
   if [ -f "$mbkp_conf_file" ]; then
     ((VERBOSE)) && echo "Calling $mbkp_conf_file"
-    . "$mbkp_conf_file" || exit 1
+    . "$mbkp_conf_file" || exit $?
   else
     init_config_dir "$mbkp_conf_file"
   fi
 
   ((MBKP_FIRST_RUN)) && {
     echo "Please edit the file '$mbkp_conf_file' and try again."
-    exit 1
+    exit $?
   }
 
   local mbkp_priv_hook="$MBKP_CONFIG_BASE/priv/mbkp.conf"
   [ -f "$mbkp_priv_hook" ] && {
     ((VERBOSE)) && echo "Calling $mbkp_priv_hook"
-    . "$mbkp_priv_hook" || exit 1
+    . "$mbkp_priv_hook" || exit $?
   }
 
   [ -d "$MBKP_MODULE_CACHE_BASE" ] || {
@@ -57,21 +57,28 @@ init_config() {
 
 init_module() {
 
+  module="$1"; shift
   FAILED=''
 
   init_config
 
+  local mbkp_module_exists=0
+
   local module_hook="$MBKP_CONFIG_BASE/priv/$module.conf"
   [ -f "$module_hook" ] && {
     echo "Calling: $module_hook"
-    . "$module_hook"
+    . "$module_hook" || exit $?
+    mbkp_module_exists=1
   }
 
   module_hook="$MBKP_CONFIG_BASE/modules/$module.conf"
   [ -f "$module_hook" ] && {
     echo "Calling: $module_hook"
-    . "$module_hook"
+    . "$module_hook" || exit $?
+    mbkp_module_exists=1
   }
+
+  ((mbkp_module_exists)) || module_not_found
 
   ((canonicalize_source)) && mbkp_src="$(readlink --canonicalize-missing $mbkp_src)"
   # Append '/' if needed
