@@ -76,6 +76,22 @@ EXP_call_usage() {
   exit 1
 }
 
+EXP_config_backup_usage() {
+  echo "$0 config-backup [<target-dir>]"
+  echo
+  echo "backup all configuration files to a compressed unencrypted tar archive"
+  echo
+  exit 1
+}
+
+EXP_config_restore_usage() {
+  echo "$0 config-restore [<target-file>]"
+  echo
+  echo "restore all configuration files from a compressed unencrypted tar archive"
+  echo
+  exit 1
+}
+
 module_not_found() {
   echo "Module not found: $module"
   echo "Please create the file '$MBKP_CONFIG_BASE/$module.conf' or '$MBKP_CONFIG_BASE/priv/$module.conf'"

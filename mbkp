@@ -59,6 +59,12 @@ main() {
     c|'call')
       EXP_call "${params[@]}"
       ;;
+    cb|'config-backup')
+      EXP_config_backup "${params[@]}"
+      ;;
+    cr|'config-restore')
+      EXP_config_restore "${params[@]}"
+      ;;
     *)
       echo "mbkp: unknown command '$cmd'"
       usage
