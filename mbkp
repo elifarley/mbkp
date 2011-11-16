@@ -15,6 +15,7 @@ for item in "${_INCLUDES[@]}"; do . "$CMD_BASE/inc/$item.inc.sh"; done
 (($#)) || usage
 
 VERBOSE=0
+_dry_run=0
 
 main() {
 
@@ -25,6 +26,9 @@ main() {
     case "$1" in
       -v|--verbose)
         VERBOSE="$2"; shift
+        ;;
+      --dry-run)
+        _dry_run=1
         ;;
       *)
         params+=("$1")
