@@ -78,3 +78,16 @@ EXP_config_restore() {
   tar -jxvf "$archive_file" -C "$(dirname $MBKP_CONFIG_BASE)" || exit $?
   echo "mbkp configuration folder restored to '$(dirname $MBKP_CONFIG_BASE)'"
 }
+
+EXP_config_edit() {
+  local file=''
+   if (($#)); then
+    init_module "$1"; shift
+    file="modules/$module.conf"
+  else
+    init_config
+    file="mbkp.conf"
+  fi
+
+  ${EDITOR:-vim} "$MBKP_CONFIG_BASE/$file"
+}

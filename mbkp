@@ -65,6 +65,9 @@ main() {
     cr|'config-restore')
       EXP_config_restore "${params[@]}"
       ;;
+    ce|'config-edit')
+      EXP_config_edit "${params[@]}"
+      ;;
     *)
       echo "mbkp: unknown command '$cmd'"
       usage

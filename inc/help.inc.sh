@@ -92,6 +92,14 @@ EXP_config_restore_usage() {
   exit 1
 }
 
+EXP_config_edit_usage() {
+  echo "$0 config-edit <module>"
+  echo
+  echo "edit the configuration for a given module"
+  echo
+  exit 1
+}
+
 module_not_found() {
   echo "Module not found: $module"
   echo "Please create the file '$MBKP_CONFIG_BASE/$module.conf' or '$MBKP_CONFIG_BASE/priv/$module.conf'"
