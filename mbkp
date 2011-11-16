@@ -52,6 +52,9 @@ main() {
     h|'help')
       EXP_help "${params[@]}"
       ;;
+    c|'call')
+      EXP_call "${params[@]}"
+      ;;
     *)
       echo "mbkp: unknown command '$cmd'"
       usage

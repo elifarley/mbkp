@@ -44,3 +44,23 @@ EXP_restore() {
   init_module "$1"; shift
   dupl restore -v8 "$mbkp_full_target" "$@"
 }
+
+EXP_call() {
+  (($# == 2)) || EXP_call_usage
+  init_module "$1"; shift
+  hook_type="$1"; shift
+
+  case "$hook_type" in
+    pre)
+      pre_module_backup
+      ;;
+    post)
+      post_module_backup
+      ;;
+    *)
+      echo "mbkp: unknown hook type '$hook_type'"
+      EXP_call_usage
+      ;;
+  esac
+
+}

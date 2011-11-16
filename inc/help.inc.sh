@@ -55,8 +55,15 @@ EXP_restore_usage() {
   exit 1
 }
 
+EXP_call_usage() {
+  echo "Usage:"
+  echo "$0 call <module> <hook-type>"
+  echo "<hook-type> can be 'pre' or 'post'"
+  exit 1
+}
+
 module_not_found() {
-  echo "Modulo not found: $module"
+  echo "Module not found: $module"
   echo "Please create the file '$MBKP_CONFIG_BASE/$module.conf' or '$MBKP_CONFIG_BASE/priv/$module.conf'"
   exit 1
 }
