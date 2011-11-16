@@ -10,6 +10,10 @@ usage() {
   echo "list	show all files in backup"
   echo "verify	verify the integrity of the repository"
   echo "restore	restore a backup"
+  echo "call	call a pre- or post-backup hook"
+  echo "config-backup	backup all configuration files"
+  echo "config-restore	restore all configuration files"
+  echo "config-edit	edit a configuration file"
   echo "help	show help on a given command"
   exit 1
 }
