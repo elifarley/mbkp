@@ -7,16 +7,13 @@ SITE_ROOT="$HOME/my.site.org"
 # SSH_OPTS='--ssh-options="-oIdentityFile=/home/USER/.ssh/id_dsa-nopw"'
 # export RSYNC_RSH="$(which rsync) --protocol=29"
 
-# MBKP_DATA_BASE="$HOME/.local/share/mbkp"
-
-# MBKP_ARCHIVE="$MBKP_DATA_BASE/cache/duplicity-archive"
-# MBKP_MODULE_CACHE_BASE="$MBKP_DATA_BASE/cache/modules"
+# module_cache="${XDG_CACHE_HOME:-$HOME/.cache}/mbkp/modules/$module"
 
 # mbkp_src="$module_cache"
 
 ## RSYNC URL example: mbkp_target="rsync://user@backup.host.com"
 ## SFTP  URL example: mbkp_target="ssh://user@backup.host.com/mbkp-modules"
-# mbkp_target="file://$MBKP_LOCAL_BACKUPS_BASE"
+# mbkp_target="file://${XDG_DATA_HOME:-$HOME/.local/share}/mbkp/local-backups"
 
 # canonicalize_source=0
 # volsize="50"
