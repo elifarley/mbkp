@@ -3,14 +3,14 @@ init_config_dir() {
   local modules_dir="$MBKP_CONFIG_BASE/modules"
   echo "init_config_dir: $modules_dir"
   mkdir -p "$modules_dir" || exit $?
-  cp -a --no-clobber $CMD_BASE/modules.template/* "$modules_dir"/ || exit $?
+  cp -a -ui $CMD_BASE/modules.template/* "$modules_dir"/ || exit $?
 
   local priv_dir="$MBKP_CONFIG_BASE/priv"
   echo "init_config_dir: $priv_dir"
   mkdir -p "$priv_dir" || exit $?
   chmod -R go= "$priv_dir" || exit $?
 
-  cp -av --no-clobber $CMD_BASE/.mbkp.conf.user.template "$MBKP_CONFIG_BASE"/mbkp.conf || exit $?
+  cp -av -ui $CMD_BASE/.mbkp.conf.user.template "$MBKP_CONFIG_BASE"/mbkp.conf || exit $?
 
 }
 
@@ -21,7 +21,7 @@ new_module() {
     echo "Module '$module' already exists at $module_path"
     exit 1
   }
-  cp -a --no-clobber $CMD_BASE/.mbkp-module.conf.template "$module_path" || exit $?
+  cp -a -ui $CMD_BASE/.mbkp-module.conf.template "$module_path" || exit $?
   echo "Module '$module' created at $module_path"
 }
 
