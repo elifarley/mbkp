@@ -88,7 +88,7 @@ EXP_config_restore() {
 
 EXP_config_edit() {
   local file=''
-   if (($#)); then
+  if (($#)); then
     init_module "$1"; shift
     file="modules/$module.conf"
   else

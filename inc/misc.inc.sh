@@ -1,11 +1,11 @@
 dupl() {
   if (($_dry_run)); then
     echo "--dry-run option ACTIVE. Nothing will be saved to backup archive!"
-	echo 'Command that would have been executed:'
+    echo 'Command that would have been executed:'
     echo PASSPHRASE="<hidden>" FTP_PASSWORD="<hidden>" duplicity \
     --archive-dir="$MBKP_ARCHIVE" --name "$module" --ssh-askpass $SSH_OPTS \
     "$@"
-	echo
+    echo
   else
     PASSPHRASE="$PASSPHRASE" FTP_PASSWORD="$FTP_PASSWORD" duplicity \
     --archive-dir="$MBKP_ARCHIVE" --name "$module" --ssh-askpass $SSH_OPTS \
