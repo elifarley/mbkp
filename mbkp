@@ -59,6 +59,9 @@ main() {
     c|'call')
       EXP_call "${params[@]}"
       ;;
+    cn|'config-new')
+      EXP_config_new "${params[@]}"
+      ;;
     cb|'config-backup')
       EXP_config_backup "${params[@]}"
       ;;

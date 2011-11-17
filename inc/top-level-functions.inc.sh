@@ -65,6 +65,13 @@ EXP_call() {
 
 }
 
+EXP_config_new() {
+  (($#)) || EXP_config_new_usage
+  init_config
+  module="$1"; shift
+  new_module "$module"
+}
+
 EXP_config_backup() {
   init_config
   local archive_file="${1:-$MBKP_LOCAL_BACKUPS_BASE/mbkp-config.tbz}"; shift

@@ -11,6 +11,7 @@ usage() {
   echo "verify	verify the integrity of the repository"
   echo "restore	restore a backup"
   echo "call	call a pre- or post-backup hook"
+  echo "config-new	create configuration for a new module"
   echo "config-backup	backup all configuration files"
   echo "config-restore	restore all configuration files"
   echo "config-edit	edit a configuration file"
@@ -77,6 +78,14 @@ EXP_call_usage() {
   echo "call a pre- or post-backup hook"
   echo
   echo "A hook is executed before or after a backup is performed. <hook-type> can be 'pre' or 'post'"
+  exit 1
+}
+
+EXP_config_new_usage() {
+  echo "$0 config-new <module>"
+  echo
+  echo "create configuration for a new module"
+  echo
   exit 1
 }
 

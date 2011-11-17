@@ -14,6 +14,17 @@ init_config_dir() {
 
 }
 
+new_module() {
+  module="$1"; shift
+  local module_path="$MBKP_CONFIG_BASE/modules/$module.conf"
+  [[ -e "$module_path" ]] && {
+    echo "Module '$module' already exists at $module_path"
+    exit 1
+  }
+  cp -a --no-clobber $CMD_BASE/.mbkp-module.conf.template "$module_path" || exit $?
+  echo "Module '$module' created at $module_path"
+}
+
 init_config() {
 
   local mbkp_conf_file="$MBKP_CONF_FILE"

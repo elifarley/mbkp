@@ -1,0 +1,39 @@
+#============================================================================
+# MBKP module configuration file
+#============================================================================
+
+# Default values are in comments
+#
+# Common values can be put in file mbkp.conf (use the command 'config-edit'
+# without parameters to edit that)
+
+
+# mbkp_src="$module_cache"
+
+## RSYNC URL example: mbkp_target="rsync://user@backup.host.com"
+## SFTP  URL example: mbkp_target="ssh://user@backup.host.com/mbkp-modules"
+## File  URL example: mbkp_target="file://volumes/data/backup/mbkp-modules"
+# mbkp_target="file://${XDG_DATA_HOME:-$HOME/.local/share}/mbkp/local-backups"
+
+file_list='
+this/file/will-be-included
+-while/this/one/will-not
+'
+
+# canonicalize_source=0
+# volsize="50"
+# full_if_older_than="6M"
+# keep_last_n_backups=3
+# file_list=''
+# excludes_first=0
+# included_files=()
+# excluded_files=()
+# extra=''
+
+# DB_HOST='localhost'
+# DB_NAME=''
+# DB_USER='mbkp'
+# DB_PASSWORD=''
+# included_tables=''
+# excluded_tables=''
+# db_extra=''
