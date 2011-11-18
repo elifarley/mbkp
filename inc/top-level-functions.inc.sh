@@ -18,6 +18,7 @@ EXP_backup_modules() {
 EXP_status() {
   (($#)) || EXP_status_usage
   init_module "$1"; shift
+  assert_has_dry_run || exit 1
   dupl -v8 --dry-run "${_file_selection[@]}" "$@" "$mbkp_src" "$mbkp_full_target"
 }
 

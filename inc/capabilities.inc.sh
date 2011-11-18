@@ -20,3 +20,14 @@ _dversion=$(dotted_version_to_integer "$(duplicity --version)")
 ((_dversion >= 601)) && _has_name=1 || _has_name=''
 ((_dversion >= 601)) && _has_asynchronous_upload=1 || _has_asynchronous_upload=''
 ((_dversion >= 514)) && _has_exclude_if_present=1 || _has_exclude_if_present=''
+((_dversion >= 503)) && _has_dry_run=1 || _has_dry_run=''
+
+assert_has_dry_run() {
+
+  [[ -n $_has_dry_run ]] || {
+    echo "Duplicity option '--dry-run' not available. Please use Duplicity version 0.5.03 or newer"
+    return 1
+  }
+  return 0
+
+}
