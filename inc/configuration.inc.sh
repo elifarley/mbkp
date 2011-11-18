@@ -121,7 +121,7 @@ init_module() {
   } || exclude_gfilelist=''
 
   set -f
-  _file_selection=(--exclude-if-present CACHEDIR.TAG ${file_list[@]})
+  _file_selection=(${_has_exclude_if_present:+--exclude-if-present CACHEDIR.TAG} ${file_list[@]})
   ((excludes_first)) && _file_selection+=("${excluded_files[@]}" "${included_files[@]}") || _file_selection+=("${included_files[@]}" "${excluded_files[@]}")
   _file_selection+=($include_gfilelist $exclude_gfilelist)
 

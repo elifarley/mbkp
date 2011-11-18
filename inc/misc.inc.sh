@@ -3,12 +3,12 @@ dupl() {
     echo "--dry-run option ACTIVE. Nothing will be saved to backup archive!"
     echo 'Command that would have been executed:'
     echo PASSPHRASE="<hidden>" FTP_PASSWORD="<hidden>" duplicity \
-    --archive-dir="$MBKP_ARCHIVE" --name "$module" --ssh-askpass $SSH_OPTS \
+    --archive-dir="$MBKP_ARCHIVE" ${_has_name:+--name "$module"} --ssh-askpass $SSH_OPTS \
     "$@"
     echo
   else
     PASSPHRASE="$PASSPHRASE" FTP_PASSWORD="$FTP_PASSWORD" duplicity \
-    --archive-dir="$MBKP_ARCHIVE" --name "$module" --ssh-askpass $SSH_OPTS \
+    --archive-dir="$MBKP_ARCHIVE" ${_has_name:+--name "$module"} --ssh-askpass $SSH_OPTS \
     "$@"
   fi
 }
@@ -47,7 +47,7 @@ do_backup() {
   dupl cleanup --force "$backup_target" # --extra-clean
 
   dupl --gpg-options "--compress-algo=bzip2 --bzip2-compress-level=9" \
-  --asynchronous-upload ${volsize:+--volsize="$volsize"} \
+  ${_has_asynchronous_upload:+--asynchronous-upload} ${volsize:+--volsize="$volsize"} \
   --full-if-older-than $full_if_older_than $extra "${_file_selection[@]}" \
   "$backup_src" "$backup_target" || FAILED="$module"
 } # do_backup
