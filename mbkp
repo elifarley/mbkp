@@ -5,6 +5,7 @@ MBKP_CONF_FILE="$CMD_BASE/mbkp.conf"
 _INCLUDES=(
   configuration
   base
+  capabilities
   top-level-functions
   misc
   mysql
