@@ -50,19 +50,10 @@ init_config() {
     . "$mbkp_priv_hook" || exit $?
   }
 
-  [ -d "$MBKP_MODULE_CACHE_BASE" ] || {
-    mkdir -p "$MBKP_MODULE_CACHE_BASE" || {
-      echo "Unable to create module cache base dir at '$MBKP_MODULE_CACHE_BASE'."
-      exit 2
-    }
-  }
-
-  [ -d "$MBKP_LOCAL_BACKUPS_BASE" ] || {
-    mkdir -p "$MBKP_LOCAL_BACKUPS_BASE" || {
-      echo "Unable to create local backups dir at '$MBKP_LOCAL_BACKUPS_BASE'."
-      exit 3
-    }
-  }
+  # Create directories if absent
+  mkdir -p "$MBKP_ARCHIVE"
+  mkdir -p "$MBKP_MODULE_CACHE_BASE"
+  mkdir -p "$MBKP_LOCAL_BACKUPS_BASE"
 
 } # init_config
 
