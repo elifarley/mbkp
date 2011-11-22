@@ -26,13 +26,12 @@ EXP_list() {
   (($#)) || EXP_list_usage
   init_module "$1"; shift
   dupl list-current-files "$@" "$mbkp_full_target"
-
 }
 
 EXP_verify() {
   (($#)) || EXP_verify_usage
   init_module "$1"; shift
-  dupl verify "${_file_selection[@]}" "$@" "$mbkp_full_target" "$mbkp_src"
+  dupl verify -v4 "${_file_selection[@]}" "$@" "$mbkp_full_target" "$mbkp_src"
 }
 
 EXP_restore() {
