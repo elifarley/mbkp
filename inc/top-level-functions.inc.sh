@@ -100,7 +100,7 @@ EXP_config_edit() {
     init_module "$1"; shift
     file="modules/$module.conf"
   else
-    init_config
+    init_config 1
     file="mbkp.conf"
   fi
 

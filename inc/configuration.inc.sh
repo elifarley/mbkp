@@ -3,7 +3,6 @@ init_config_dir() {
   local modules_dir="$MBKP_CONFIG_BASE/modules"
   echo "init_config_dir: $modules_dir"
   mkdir -p "$modules_dir" || exit $?
-  cp -a -ui $CMD_BASE/modules.template/* "$modules_dir"/ || exit $?
 
   local priv_dir="$MBKP_CONFIG_BASE/priv"
   echo "init_config_dir: $priv_dir"
@@ -27,22 +26,23 @@ new_module() {
 
 init_config() {
 
+  local _suppress_first_run_check="${1:-0}"; shift
+
   local mbkp_conf_file="$MBKP_CONF_FILE"
   ((VERBOSE)) && echo "Calling $mbkp_conf_file"
   . "$mbkp_conf_file" || exit $?
 
   mbkp_conf_file="$MBKP_CONFIG_BASE/mbkp.conf"
-  if [ -f "$mbkp_conf_file" ]; then
+  if [[ -f "$mbkp_conf_file" ]]; then
     ((VERBOSE)) && echo "Calling $mbkp_conf_file"
     . "$mbkp_conf_file" || exit $?
   else
-    init_config_dir "$mbkp_conf_file"
+    ((_suppress_first_run_check)) || config_not_found
+    init_config_dir
   fi
 
-  ((MBKP_FIRST_RUN)) && {
-    echo "Please edit the file '$mbkp_conf_file' and try again."
-    exit $?
-  }
+  (( _suppress_first_run_check == 0 && MBKP_FIRST_RUN == 1 )) && \
+    config_not_found 1
 
   local mbkp_priv_hook="$MBKP_CONFIG_BASE/priv/mbkp.conf"
   [ -f "$mbkp_priv_hook" ] && {

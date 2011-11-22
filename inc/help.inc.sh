@@ -5,18 +5,18 @@ usage() {
   echo
   echo "Basic commands:"
   echo
-  echo "backup	perform a full or incremental backup"
-  echo "status	show changed files in the working directory"
-  echo "list	show all files in backup"
-  echo "verify	verify the integrity of the repository"
-  echo "restore	restore a backup"
-  echo "call	call a pre- or post-backup hook"
-  echo "repo-list	list the chains and sets in the backup repository"
-  echo "config-new	create configuration for a new module"
-  echo "config-export	export all configuration files"
-  echo "config-import	import all configuration files"
-  echo "config-edit	edit a configuration file"
-  echo "help	show help on a given command"
+  echo "backup    perform a full or incremental backup"
+  echo "status    show changed files in the working directory"
+  echo "list    show all files in backup"
+  echo "verify    verify the integrity of the repository"
+  echo "restore    restore a backup"
+  echo "call    call a pre- or post-backup hook"
+  echo "repo-list    list the chains and sets in the backup repository"
+  echo "config-new    create configuration for a new module"
+  echo "config-export    export all configuration files"
+  echo "config-import    import all configuration files"
+  echo "config-edit    edit a configuration file"
+  echo "help    show help on a given command"
   exit 1
 }
 
@@ -123,8 +123,30 @@ EXP_config_edit_usage() {
   exit 1
 }
 
+config_not_found() {
+  local _config_not_enabled="${1:-0}"; shift
+
+  if ((_config_not_enabled)); then
+    echo "mbkp configuration NOT ENABLED."
+    echo "Please enable it by removing the line that reads 'MBKP_FIRST_RUN'."
+    echo "To edit the configuration file, just type the command below:"
+  else
+    echo "mbkp configuration not found."
+    echo "Please create the configuration file by typing the command below:"
+  fi
+  echo
+  echo '-------------------------------------------'
+  echo "$0 config-edit"
+  echo '-------------------------------------------'
+  exit 1
+}
+
 module_not_found() {
   echo "Module not found: '$module'"
-  echo "Please create the file '$MBKP_CONFIG_BASE/$module.conf' or '$MBKP_CONFIG_BASE/priv/$module.conf'"
+  echo "Please create this module by typing the command below:"
+  echo
+  echo '-------------------------------------------'
+  echo "$0 config-new $module"
+  echo '-------------------------------------------'
   exit 1
 }
