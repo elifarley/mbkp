@@ -55,7 +55,7 @@ EXP_restore() {
   dupl restore -v5 "$mbkp_full_target" "$_restore_target" "${params[@]}"
 }
 
-EXP_repo_list() {
+EXP_log() {
   module="$1"; shift
   if [[ -z "$module" ]]; then
     init_config

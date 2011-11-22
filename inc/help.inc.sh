@@ -5,17 +5,17 @@ usage() {
   echo
   echo "Basic commands:"
   echo
-  echo "backup    perform a full or incremental backup"
-  echo "status    show changed files in the working directory"
+  echo "backup  perform a full or incremental backup"
+  echo "status  show changed files in the working directory"
   echo "list    show all files in backup"
-  echo "verify    verify the integrity of the repository"
-  echo "restore    restore a backup"
+  echo "verify  verify the integrity of the repository"
+  echo "restore restore a backup"
   echo "call    call a pre- or post-backup hook"
-  echo "repo-list    list the chains and sets in the backup repository"
+  echo "log     list the chains and sets in the backup repository"
   echo "config-new    create configuration for a new module"
-  echo "config-export    export all configuration files"
-  echo "config-import    import all configuration files"
-  echo "config-edit    edit a configuration file"
+  echo "config-export export all configuration files"
+  echo "config-import import all configuration files"
+  echo "config-edit   edit a configuration file"
   echo "help    show help on a given command"
   exit 1
 }
@@ -85,8 +85,8 @@ EXP_call_usage() {
 }
 
 
-EXP_repo_list_usage() {
-  echo "$0 repo-list <module>"
+EXP_log_usage() {
+  echo "$0 log <module>"
   echo
   echo "list the chains and sets in the backup repository, and the number of volumes in each."
   echo
