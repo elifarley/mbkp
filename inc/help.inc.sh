@@ -12,8 +12,8 @@ usage() {
   echo "restore	restore a backup"
   echo "call	call a pre- or post-backup hook"
   echo "config-new	create configuration for a new module"
-  echo "config-backup	backup all configuration files"
-  echo "config-restore	restore all configuration files"
+  echo "config-export	export all configuration files"
+  echo "config-import	import all configuration files"
   echo "config-edit	edit a configuration file"
   echo "help	show help on a given command"
   exit 1
@@ -89,18 +89,18 @@ EXP_config_new_usage() {
   exit 1
 }
 
-EXP_config_backup_usage() {
-  echo "$0 config-backup [<target-dir>]"
+EXP_config_export_usage() {
+  echo "$0 config-export [<target-dir>]"
   echo
-  echo "backup all configuration files to a compressed unencrypted tar archive"
+  echo "export all configuration files to an mbkp configuration archive"
   echo
   exit 1
 }
 
-EXP_config_restore_usage() {
-  echo "$0 config-restore [<target-file>]"
+EXP_config_import_usage() {
+  echo "$0 config-load [<target-file>]"
   echo
-  echo "restore all configuration files from a compressed unencrypted tar archive"
+  echo "import all configuration files from an mbkp configuration archive"
   echo
   exit 1
 }
@@ -108,7 +108,7 @@ EXP_config_restore_usage() {
 EXP_config_edit_usage() {
   echo "$0 config-edit <module>"
   echo
-  echo "edit the configuration for a given module"
+  echo "edit the configuration for a given module or the main one"
   echo
   exit 1
 }

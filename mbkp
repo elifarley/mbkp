@@ -63,11 +63,11 @@ main() {
     cn|'config-new')
       EXP_config_new "${params[@]}"
       ;;
-    cb|'config-backup')
-      EXP_config_backup "${params[@]}"
+    cx|'config-export')
+      EXP_config_export "${params[@]}"
       ;;
-    cr|'config-restore')
-      EXP_config_restore "${params[@]}"
+    ci|'config-import')
+      EXP_config_import "${params[@]}"
       ;;
     ce|'config-edit')
       EXP_config_edit "${params[@]}"

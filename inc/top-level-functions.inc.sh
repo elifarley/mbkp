@@ -73,18 +73,18 @@ EXP_config_new() {
   new_module "$module"
 }
 
-EXP_config_backup() {
+EXP_config_export() {
   init_config
   local archive_file="${1:-$MBKP_LOCAL_BACKUPS_BASE/mbkp-config.tbz}"; shift
   tar -jcvf "$archive_file" -C "$(dirname $MBKP_CONFIG_BASE)" mbkp || exit $?
-  echo "mbkp configuration folder saved to '$archive_file'"
+  echo "mbkp configuration files exported to '$archive_file'"
 }
 
-EXP_config_restore() {
+EXP_config_import() {
   init_config
   local archive_file="${1:-$MBKP_LOCAL_BACKUPS_BASE/mbkp-config.tbz}"; shift
   tar -jxvf "$archive_file" -C "$(dirname $MBKP_CONFIG_BASE)" || exit $?
-  echo "mbkp configuration folder restored to '$(dirname $MBKP_CONFIG_BASE)'"
+  echo "mbkp configuration files imported to '$(dirname $MBKP_CONFIG_BASE)'"
 }
 
 EXP_config_edit() {
