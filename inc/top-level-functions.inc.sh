@@ -23,14 +23,9 @@ EXP_status() {
 }
 
 EXP_list() {
-  module="$1"; shift
-  if [[ -z "$module" ]]; then
-    init_config
-    du -hs $MBKP_ARCHIVE/* | awk -F/ '{ print $NF,$1 }'
-  else
-    init_module "$module"
-    dupl list-current-files -v8 "$@" "$mbkp_full_target"
-  fi
+  (($#)) || EXP_list_usage
+  init_module "$1"; shift
+  dupl list-current-files "$@" "$mbkp_full_target"
 
 }
 
@@ -44,6 +39,18 @@ EXP_restore() {
   (($#)) || EXP_restore_usage
   init_module "$1"; shift
   dupl restore -v8 "$mbkp_full_target" "$@"
+}
+
+EXP_repo_list() {
+  module="$1"; shift
+  if [[ -z "$module" ]]; then
+    init_config
+    du -hs $MBKP_ARCHIVE/* | awk -F/ '{ print $NF,$1 }'
+  else
+    init_module "$module"
+    dupl collection-status "$@" "$mbkp_full_target"
+  fi
+
 }
 
 EXP_call() {

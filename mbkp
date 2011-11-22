@@ -60,6 +60,9 @@ main() {
     c|'call')
       EXP_call "${params[@]}"
       ;;
+    rl|'repo-list')
+      EXP_repo_list "${params[@]}"
+      ;;
     cn|'config-new')
       EXP_config_new "${params[@]}"
       ;;

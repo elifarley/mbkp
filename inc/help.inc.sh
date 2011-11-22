@@ -11,6 +11,7 @@ usage() {
   echo "verify	verify the integrity of the repository"
   echo "restore	restore a backup"
   echo "call	call a pre- or post-backup hook"
+  echo "repo-list	list the chains and sets in the backup repository"
   echo "config-new	create configuration for a new module"
   echo "config-export	export all configuration files"
   echo "config-import	import all configuration files"
@@ -49,7 +50,7 @@ EXP_status_usage() {
 }
 
 EXP_list_usage() {
-  echo "$0 list [<module>] [<param> ...]"
+  echo "$0 list <module> [<param> ...]"
   echo
   echo "list files contained in a backup"
   echo
@@ -78,6 +79,15 @@ EXP_call_usage() {
   echo "call a pre- or post-backup hook"
   echo
   echo "A hook is executed before or after a backup is performed. <hook-type> can be 'pre' or 'post'"
+  exit 1
+}
+
+
+EXP_repo_list_usage() {
+  echo "$0 repo-list <module>"
+  echo
+  echo "list the chains and sets in the backup repository, and the number of volumes in each."
+  echo
   exit 1
 }
 
