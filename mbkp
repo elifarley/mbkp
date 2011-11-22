@@ -20,9 +20,9 @@ _dry_run=0
 
 main() {
 
-  local params=()
   local cmd="$1"; shift
 
+  local params=()
   while (($#)); do
     case "$1" in
       -v|--verbose)

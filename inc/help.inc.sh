@@ -66,9 +66,11 @@ EXP_verify_usage() {
 }
 
 EXP_restore_usage() {
-  echo "$0 restore <module> [<param> ...]"
+  echo "$0 restore <module> [--restore-target <path>] [--force] [<param> ...]"
   echo
   echo "restore files"
+  echo "If '--restore-target' is omitted, files will be restored to <mbk_source> (defined in the module configuration)."
+  echo "If the restore target folder isn't empty, nothing will be done unless you use the '--force' switch"
   echo
   exit 1
 }
