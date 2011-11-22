@@ -15,9 +15,11 @@ backup_single_module() {
 
   local module="$1"; shift
 
-  echo "--------------------------------------------------"
-  echo "Backup STARTED for module $module"
-  echo "--------------------------------------------------"
+  echo
+  echo "-------------------------------------------------"
+  echo "STARTED backup: '$module'"
+  echo "-------------------------------------------------"
+  echo
 
   init_module "$module"
   pre_module_backup
@@ -29,9 +31,9 @@ backup_single_module() {
     echo "############################# FAILED '$FAILED' !"
     echo "##################################################"
   }
-  echo "--------------------------------------------------"
-  echo "Backup  ENDED  for module $module"
+  echo "ENDED backup: '$module'"
   echo "======================================================================"
+  echo
 
 } # backup_single_module
 

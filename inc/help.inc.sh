@@ -124,7 +124,7 @@ EXP_config_edit_usage() {
 }
 
 module_not_found() {
-  echo "Module not found: $module"
+  echo "Module not found: '$module'"
   echo "Please create the file '$MBKP_CONFIG_BASE/$module.conf' or '$MBKP_CONFIG_BASE/priv/$module.conf'"
   exit 1
 }

@@ -75,7 +75,7 @@ init_module() {
 
   module_hook="$MBKP_CONFIG_BASE/modules/$module.conf"
   [ -f "$module_hook" ] && {
-    echo "Calling: $module_hook"
+    ((VERBOSE)) && echo "Calling: $module_hook"
     . "$module_hook" || exit $?
     mbkp_module_exists=1
   }
@@ -129,6 +129,7 @@ init_module() {
   [ -n "$exclude_gfilelist" ] && echo $exclude_gfilelist
   set +f
   echo '------------------------------------'
+  echo
 
 } # init_module
 
