@@ -19,7 +19,7 @@ EXP_status() {
   (($#)) || EXP_status_usage
   init_module "$1"; shift
   assert_has_dry_run || exit 1
-  dupl -v8 --dry-run "${_file_selection[@]}" "$@" "$mbkp_src" "$mbkp_full_target"
+  dupl -v5 --dry-run "${_file_selection[@]}" "$@" "$mbkp_src" "$mbkp_full_target"
 }
 
 EXP_list() {
@@ -32,13 +32,13 @@ EXP_list() {
 EXP_verify() {
   (($#)) || EXP_verify_usage
   init_module "$1"; shift
-  dupl verify -v8 "${_file_selection[@]}" "$@" "$mbkp_full_target" "$mbkp_src"
+  dupl verify "${_file_selection[@]}" "$@" "$mbkp_full_target" "$mbkp_src"
 }
 
 EXP_restore() {
   (($#)) || EXP_restore_usage
   init_module "$1"; shift
-  dupl restore -v8 "$mbkp_full_target" "$@"
+  dupl restore -v5 "$mbkp_full_target" "$@"
 }
 
 EXP_repo_list() {
