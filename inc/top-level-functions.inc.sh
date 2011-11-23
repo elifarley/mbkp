@@ -1,8 +1,16 @@
 EXP_backup_modules() {
   (($#)) || EXP_backup_modules_usage
+
+  local args=()
+  local options=()
+  while (($#)); do
+    [[ $1 == -* ]] && options+=("$1") || args+=("$1")
+    shift
+  done
+
   local failed_modules=()
-  for module in "$@"; do
-    backup_single_module "$module"
+  for module in "${args[@]}"; do
+    backup_single_module "$module" "${options[@]}"
     [ -z "$FAILED" ] || failed_modules+=("$FAILED")
   done
 

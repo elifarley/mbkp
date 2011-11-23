@@ -23,7 +23,7 @@ backup_single_module() {
 
   init_module "$module"
   pre_module_backup
-  do_backup "$mbkp_src" "$mbkp_full_target"
+  do_backup "$mbkp_src" "$mbkp_full_target" "$@"
   post_module_backup
 
   [ -z "$FAILED" ] || {
@@ -48,6 +48,6 @@ do_backup() {
 
   dupl --gpg-options "--compress-algo=bzip2 --bzip2-compress-level=9" \
   ${_has_asynchronous_upload:+--asynchronous-upload} ${volsize:+--volsize="$volsize"} \
-  --full-if-older-than $full_if_older_than $extra "${_file_selection[@]}" \
+  --full-if-older-than $full_if_older_than $extra "$@" "${_file_selection[@]}" \
   "$backup_src" "$backup_target" || FAILED="$module"
 } # do_backup
