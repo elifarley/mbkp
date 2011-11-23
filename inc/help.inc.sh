@@ -129,7 +129,7 @@ EXP_config_export_usage() {
 }
 
 EXP_config_import_usage() {
-  echo "$0 config-load [<target-file>]"
+  echo "$0 config-import [<target-file>]"
   echo
   echo "import all configuration files from an mbkp configuration archive"
   echo

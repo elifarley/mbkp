@@ -168,8 +168,14 @@ EXP_config_export() {
 }
 
 EXP_config_import() {
-  init_config
+  init_config 1
   local archive_file="${1:-$MBKP_LOCAL_BACKUPS_BASE/mbkp-config.tbz}"; shift
+  [[ -f $archive_file ]] || {
+    echo "File not found: '$archive_file'"
+    echo "Please specify a configuration archive to import. Usage:"
+    echo
+    EXP_config_import_usage
+  }
   tar -jxvf "$archive_file" -C "$(dirname $MBKP_CONFIG_BASE)" || exit $?
   echo "mbkp configuration files imported to '$(dirname $MBKP_CONFIG_BASE)'"
 }
