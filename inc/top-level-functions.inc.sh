@@ -2,15 +2,15 @@ EXP_backup_modules() {
   (($#)) || EXP_backup_modules_usage
 
   local args=()
-  local options=()
+  local opts=()
   while (($#)); do
-    [[ $1 == -* ]] && options+=("$1") || args+=("$1")
+    [[ $1 == -* ]] && opts+=("$1") || args+=("$1")
     shift
   done
 
   local failed_modules=()
   for module in "${args[@]}"; do
-    backup_single_module "$module" "${options[@]}"
+    backup_single_module "$module" "${opts[@]}"
     [ -z "$FAILED" ] || failed_modules+=("$FAILED")
   done
 
@@ -44,23 +44,33 @@ EXP_verify() {
 
 EXP_restore() {
   (($#)) || EXP_restore_usage
-  init_module "$1"; shift
-  local _restore_target="$mbkp_src"
+  local _restore_target=''
 
-  local params=()
+  local args=()
+  local opts=()
   while (($#)); do
     case "$1" in
       --restore-target)
+        (($# > 1)) || { echo "--restore-target: missing arg"; exit 1; }
         _restore_target="$2"; shift
         ;;
       *)
-        params+=("$1")
+        [[ $1 == -* ]] && opts+=("$1") || args+=("$1")
       ;;
     esac
     shift
   done
 
-  dupl restore -v5 "$mbkp_full_target" "$_restore_target" "${params[@]}"
+  ((${#args[@]} == 1)) || {
+    echo "Exactly one module name must be given";
+    echo "Modules given: ${args[@]}"
+    exit 1
+  }
+
+  init_module "${args[0]}"
+  [[ -n $_restore_target ]] || _restore_target="$mbkp_src"
+
+  dupl restore -v5 "${opts[@]}" "$mbkp_full_target" "$_restore_target"
 }
 
 EXP_log() {
