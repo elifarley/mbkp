@@ -10,7 +10,7 @@ usage() {
   echo "list    show all files in backup"
   echo "verify  verify the integrity of the repository"
   echo "restore restore a backup"
-  echo "call    call a pre- or post-backup hook"
+  echo "call    call a hook"
   echo "log     list the chains and sets in the backup repository"
   echo "cache-size    show cache sizes"
   echo "cache-zap     zap cache data"
@@ -80,9 +80,10 @@ EXP_restore_usage() {
 EXP_call_usage() {
   echo "$0 call <module> <hook-type>"
   echo
-  echo "call a pre- or post-backup hook"
+  echo "call a hook"
   echo
-  echo "A hook is executed before or after a backup is performed. <hook-type> can be 'pre' or 'post'"
+  echo "Hook are executed before and after a backup or a restore is performed."
+  echo "<hook-type> can be: 'pre-backup', 'post-backup', 'pre-restore' and 'post-restore'"
   exit 1
 }
 

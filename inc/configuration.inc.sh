@@ -147,6 +147,7 @@ process_file_list_item() {
 
 pre_module_backup() {
 
+  # TODO rename to $module.pre-backup
   local pre_hook="$MBKP_CONFIG_BASE/modules/$module.pre"
   if [ -s "$pre_hook" ]; then
     echo "Calling: $pre_hook"
@@ -161,6 +162,7 @@ pre_module_backup() {
 
 post_module_backup() {
 
+  # TODO rename to $module.post-backup
   local post_hook="$MBKP_CONFIG_BASE/modules/$module.post"
   if [ -s "$post_hook" ]; then
     echo "Calling: $post_hook"
@@ -170,3 +172,30 @@ post_module_backup() {
   fi
 
 } # post_module_backup
+
+pre_module_restore() {
+
+  local pre_hook="$MBKP_CONFIG_BASE/modules/$module.pre-restore"
+  if [ -s "$pre_hook" ]; then
+    echo "Calling: $pre_hook"
+    . $pre_hook "$module_cache" || exit $?
+  else
+    ((VERBOSE)) && echo "### NOT CALLED: $pre_hook"
+  fi
+
+  # TODO check '--force' and trhen call time mysql_restore
+
+} # pre_module_restore
+
+post_module_restore() {
+
+  local post_hook="$MBKP_CONFIG_BASE/modules/$module.post-restore"
+  if [ -s "$post_hook" ]; then
+    echo "Calling: $post_hook"
+   . $post_hook "$module_cache" || FAILED="$post_hook"
+  else
+    ((VERBOSE)) && echo "### $post_hook NOT CALLED."
+  fi
+
+} # post_module_restore
+

@@ -70,7 +70,9 @@ EXP_restore() {
   init_module "${args[0]}"
   [[ -n $_restore_target ]] || _restore_target="$mbkp_src"
 
+  pre_module_restore
   dupl restore -v5 "${opts[@]}" "$mbkp_full_target" "$_restore_target"
+  post_module_restore
 }
 
 EXP_log() {
@@ -86,11 +88,17 @@ EXP_call() {
   hook_type="$1"; shift
 
   case "$hook_type" in
-    pre)
+    pre-backup)
       pre_module_backup
       ;;
-    post)
+    post-backup)
       post_module_backup
+      ;;
+    pre-restore)
+      pre_module_restore
+      ;;
+    post-restore)
+      post_module_restore
       ;;
     *)
       echo "mbkp: unknown hook type '$hook_type'"
