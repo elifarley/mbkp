@@ -12,6 +12,8 @@ usage() {
   echo "restore restore a backup"
   echo "call    call a pre- or post-backup hook"
   echo "log     list the chains and sets in the backup repository"
+  echo "cache-size    show cache sizes"
+  echo "cache-zap     zap cache data"
   echo "config-new    create configuration for a new module"
   echo "config-export export all configuration files"
   echo "config-import import all configuration files"
@@ -89,6 +91,22 @@ EXP_log_usage() {
   echo "$0 log <module>"
   echo
   echo "list the chains and sets in the backup repository, and the number of volumes in each."
+  echo
+  exit 1
+}
+
+EXP_cache_size_usage() {
+  echo "$0 cache-size [<module>]"
+  echo
+  echo "show cache size for a given module. If no module is given, all modules are shown"
+  echo
+  exit 1
+}
+
+EXP_cache_zap_usage() {
+  echo "$0 cache-zap <module>"
+  echo
+  echo "zap cache data for a given module"
   echo
   exit 1
 }

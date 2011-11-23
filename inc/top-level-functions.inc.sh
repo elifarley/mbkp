@@ -74,15 +74,10 @@ EXP_restore() {
 }
 
 EXP_log() {
-  module="$1"; shift
-  if [[ -z "$module" ]]; then
-    init_config
-    du -hs $MBKP_ARCHIVE/* | awk -F/ '{ print $NF,$1 }'
-  else
-    init_module "$module"
-    dupl collection-status "$@" "$mbkp_full_target"
-  fi
-
+  (($#)) || EXP_log_usage
+  init_module "$1"; shift
+  init_module "$module"
+  dupl collection-status "$@" "$mbkp_full_target"
 }
 
 EXP_call() {
@@ -103,6 +98,51 @@ EXP_call() {
       ;;
   esac
 
+}
+
+EXP_cache_size() {
+  init_config
+  module="$1"; shift
+  if [[ -z "$module" ]]; then
+    echo
+    echo "Duplicity caches:"
+    du -hs $MBKP_ARCHIVE/* | awk -F/ '{ print $NF,$1 }'
+    echo '-----------------'
+    echo
+    echo "Module caches:"
+    du -hs $MBKP_MODULE_CACHE_BASE/* | awk -F/ '{ print $NF,$1 }'
+  else
+    local _cache
+    _cache="$MBKP_ARCHIVE/$module"
+    [[ -d $_cache ]] && echo -n "Duplicity cache: " && \
+    du -hs "$_cache" | awk -F/ '{ print $NF,$1 }' || {
+      echo "no cache found at $_cache"
+    }
+
+    _cache="$MBKP_MODULE_CACHE_BASE/$module"
+    [[ -d $_cache ]] && echo -n "Module cache   : " && \
+    du -hs "$_cache" | awk -F/ '{ print $NF,$1 }' || {
+      echo "no cache found at $_cache"
+    }
+  fi
+}
+
+EXP_cache_zap() {
+  (($# == 1)) || EXP_cache_zap_usage
+  module="$1"; shift
+  init_config
+
+  echo -n "Duplicity cache: "
+  du -hs "$MBKP_ARCHIVE/$module" | awk -F/ '{ print $NF,$1 }'
+  echo -n "Module cache   : "
+  du -hs "$MBKP_MODULE_CACHE_BASE/$module" | awk -F/ '{ print $NF,$1 }'
+
+  local _cache
+  _cache="$MBKP_ARCHIVE/$module"
+  [[ -d $_cache ]] && rm -rf "$_cache" && echo "cache deleted: $_cache"
+
+  _cache="$MBKP_MODULE_CACHE_BASE/$module"
+  [[ -d $_cache ]] && rm -rf "$_cache" && echo "cache deleted: $_cache"
 }
 
 EXP_config_new() {

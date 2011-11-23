@@ -63,6 +63,12 @@ main() {
     'log')
       EXP_log "${params[@]}"
       ;;
+    cs|'cache-size')
+      EXP_cache_size "${params[@]}"
+      ;;
+    cz|'cache-zap')
+      EXP_cache_zap "${params[@]}"
+      ;;
     cn|'config-new')
       EXP_config_new "${params[@]}"
       ;;
