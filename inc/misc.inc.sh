@@ -50,8 +50,9 @@ do_backup() {
   dupl remove-all-but-n-full "$keep_last_n_backups" --force "$backup_target"
   dupl cleanup --force "$backup_target" # --extra-clean
 
-  dupl --gpg-options "--compress-algo=bzip2 --bzip2-compress-level=9" \
-  ${_has_asynchronous_upload:+--asynchronous-upload} ${volsize:+--volsize="$volsize"} \
-  --full-if-older-than $full_if_older_than $extra "$@" "${_file_selection[@]}" \
+  dupl --volsize="$volsize" --full-if-older-than $full_if_older_than \
+  --gpg-options "--compress-algo=bzip2 --bzip2-compress-level=9" \
+  ${_has_asynchronous_upload:+--asynchronous-upload} \
+   $extra "$@" "${_file_selection[@]}" \
   "$backup_src" "$backup_target" || FAILED="$module"
 } # do_backup
