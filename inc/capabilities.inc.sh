@@ -24,7 +24,7 @@ _dversion=$(dotted_version_to_integer "$(duplicity --version)")
 
 assert_has_dry_run() {
 
-  [[ -n $_has_dry_run ]] || {
+  ((_has_dry_run)) || {
     echo "Duplicity option '--dry-run' not available. Please use Duplicity version 0.5.03 or newer"
     return 1
   }
