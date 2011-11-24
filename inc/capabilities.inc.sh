@@ -22,6 +22,11 @@ _dversion=$(dotted_version_to_integer "$(duplicity --version)")
 ((_dversion >= 514)) && _has_exclude_if_present=1 || _has_exclude_if_present=''
 ((_dversion >= 503)) && _has_dry_run=1 || _has_dry_run=''
 
+get_duplicity_cache_dir() {
+  local result="$MBKP_ARCHIVE"; ((_has_name)) || result+="/$module"
+  echo $result
+}
+
 assert_has_dry_run() {
 
   ((_has_dry_run)) || {

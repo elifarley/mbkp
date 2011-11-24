@@ -2,7 +2,7 @@ dupl() {
   local _function_params=("$@")
   local _first_param="${_function_params[@]:0:1}"
   local _other_params=("${_function_params[@]:1}")
-  local _params=(${_has_name:+--name "$module"} --archive-dir="$MBKP_ARCHIVE" --ssh-askpass $SSH_OPTS)
+  local _params=(${_has_name:+--name "$module"} --archive-dir="$(get_duplicity_cache_dir)" --ssh-askpass $SSH_OPTS)
   _params=($_first_param "${_params[@]}" "${_other_params[@]}")
 
   if ((_dry_run)); then

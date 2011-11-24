@@ -88,9 +88,13 @@ init_module() {
 
   mbkp_full_target="$mbkp_target/$module"
 
-  [ -e "$module_cache" ] || {
-    ((VERBOSE)) && echo "Creating $module_cache"
-    mkdir "$module_cache" || exit $?
+  ((_has_name)) || [[ -d $(get_duplicity_cache_dir) ]] || mkdir "$(get_duplicity_cache_dir)" || {
+    echo "Unable to create Duplicity cache at '$(get_duplicity_cache_dir)'"
+    exit 1
+  }
+  [[ -d $module_cache ]] || mkdir "$module_cache" || {
+    echo "Unable to create module cache at '$module_cache'"
+    exit 1
   }
 
   add_prefix "#!process_file_list_item" file_list
