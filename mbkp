@@ -54,6 +54,9 @@ main() {
     r|restore)
       EXP_restore "${params[@]}"
       ;;
+    'version')
+      EXP_version "${params[@]}"
+      ;;
     h|'help')
       EXP_help "${params[@]}"
       ;;

@@ -19,7 +19,24 @@ usage() {
   echo "config-import import all configuration files"
   echo "config-edit   edit a configuration file"
   echo "help    show help on a given command"
+  echo "version output version and copyright information"
   exit 1
+}
+
+EXP_version() {
+  echo "mbkp - Modular Backup (version 0.1.0)
+
+Copyright (C) 2010-2011 Elifarley Cruz
+This is free software; see the source for copying conditions. There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+"
+  duplicity --version | sed -n '1 p'
+  python --version | sed -n '1 p'
+  echo "Bash: $BASH_VERSION"
+  sed --version | sed -n '1 p'
+  cut --version | sed -n '1 p'
+  tr --version | sed -n '1 p'
+  uname -a
 }
 
 EXP_help() {
