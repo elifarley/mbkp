@@ -26,8 +26,12 @@ EXP_backup_modules() {
 EXP_status() {
   (($#)) || EXP_status_usage
   init_module "$1"; shift
-  assert_has_dry_run || exit 1
-  dupl -v5 --dry-run $extra "${_file_selection[@]}" "$@" "$mbkp_src" "$mbkp_full_target"
+  if ((_has_dry_run)); then
+    dupl -v5 --dry-run $extra "${_file_selection[@]}" "$@" "$mbkp_src" "$mbkp_full_target"
+  else
+    echo "'--dry-run' not available. Will have to download all backup archives from the repository"
+    dupl verify -v4 "${_file_selection[@]}" "$@" "$mbkp_full_target" "$mbkp_src"
+  fi
 }
 
 EXP_list() {

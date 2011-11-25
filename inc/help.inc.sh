@@ -6,7 +6,7 @@ usage() {
   echo "Basic commands:"
   echo
   echo "backup  perform a full or incremental backup"
-  echo "status  show changed files in the working directory"
+  echo "status  show missing, new and modified files"
   echo "list    show all files in backup"
   echo "verify  verify the integrity of the repository"
   echo "restore restore a backup"
@@ -46,8 +46,10 @@ EXP_backup_modules_usage() {
 EXP_status_usage() {
   echo "$0 status <module> [<param> ...]"
   echo
-  echo "list changed files"
+  echo "show missing, new and modified files in the working directory"
   echo
+  echo "If a given file exists both in the source dir and in the last backup, compare the modification time from source against the corresponding modification time as recorded in the last backup."
+  echo "If they are the same, the file is not listed (not even if the file content has changed)"
   exit 1
 }
 
