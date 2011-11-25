@@ -18,24 +18,32 @@ dupl() {
 backup_single_module() {
 
   local module="$1"; shift
+  local _lock="mbkp-backup.$USER.$module"
+  local _lock_ok=0
 
-  echo
-  echo "-------------------------------------------------"
-  echo "STARTED backup: '$module'"
-  echo "-------------------------------------------------"
-  echo
+  acquire_lock "$_lock" && {
+    _lock_ok=1
+    echo
+    echo "-------------------------------------------------"
+    echo "STARTED backup: '$module'"
+    echo "-------------------------------------------------"
+    echo
 
-  init_module "$module"
-  pre_module_backup
-  do_backup "$mbkp_src" "$mbkp_full_target" "$@"
-  post_module_backup
+    init_module "$module"
+    pre_module_backup
+    do_backup "$mbkp_src" "$mbkp_full_target" "$@"
+    post_module_backup
+
+  release_lock "$_lock"; }
+
+  ((_lock_ok)) || FAILED="$module:RUNNING"
 
   [ -z "$FAILED" ] || {
     echo "##################################################"
     echo "############################# FAILED '$FAILED' !"
     echo "##################################################"
   }
-  echo "ENDED backup: '$module'"
+  ((_lock_ok)) && echo "ENDED backup: '$module'" || echo "SKIPPED backup: '$module'"
   echo "======================================================================"
   echo
 

@@ -23,3 +23,62 @@ add_prefix() {
   eval "$result_var=(${result[@]})"
   set +f
 }
+
+acquire_lock() {
+  _acquire_lock 0 "$@" || _acquire_lock 1 "$@" || return $?
+}
+
+# Based on:
+# 1) http://wiki.bash-hackers.org/howto/mutex
+# 2) http://www.pathname.com/fhs/pub/fhs-2.3.html
+# 3) http://docs.freebsd.org/info/uucp/uucp.info.UUCP_Lock_Files.html
+_acquire_lock() {
+
+  local _lock_try="$1"; shift
+  local _lock="$1"; shift
+
+  ((_lock_try == 0)) && echo "Acquiring lock: $_lock"
+  _lock="/var/lock/LK.$_lock"
+
+  # Atomically create lock file
+  set -o noclobber && \
+  printf '%010d\n' $$ &>/dev/null > "$_lock" && \
+  delete_on_exit "$_lock" && \
+  return 0
+
+  local _other_pid=$(cat $_lock) || {
+    echo "Failed to read other PID from '$_lock'" >&2
+    exit 2
+  }
+
+  kill -0 $_other_pid &>/dev/null && {
+    echo "Failed to acquire lock for '$(basename $_lock)': PID ${_other_pid} is still running." >&2
+    exit 2
+  }
+
+  rm -rf "$_lock" && [[ ! -f $_lock ]] || {
+    echo "Unable to remove '$_lock' (PID $_other_pid)" >&2
+    exit 2
+  }
+  echo "Stale lock file removed: '$_lock'" >&2
+  return 1
+
+}
+
+release_lock() {
+  local _lock="$1"; shift
+  rm -rf "/var/lock/LK.$_lock"
+  trap - 0
+  echo "Lock released: '$_lock'"
+}
+
+delete_on_exit() {
+  local file_to_remove="$1"; shift
+  trap '\
+    _ecode=$?;
+    set +o noclobber
+    echo "Removing '$file_to_remove'. Exit code: $_ecode" >&2
+    rm -r "'$file_to_remove'"
+  ' 0
+  return 0
+}
