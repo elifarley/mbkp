@@ -55,8 +55,12 @@ do_backup() {
   local backup_src="$1"; shift
   local backup_target="$1"; shift
 
+  echo "Removing old backp files from repository..."
   dupl remove-all-but-n-full "$keep_last_n_backups" --force "$backup_target"
+  echo
+  echo "Cleaning up Duplicity cache..."
   dupl cleanup --force "$backup_target" # --extra-clean
+  echo
 
   dupl --volsize="$volsize" --full-if-older-than $full_if_older_than \
   --gpg-options "--compress-algo=bzip2 --bzip2-compress-level=9" \
