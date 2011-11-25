@@ -16,7 +16,8 @@ for item in "${_INCLUDES[@]}"; do . "$CMD_BASE/inc/$item.inc.sh"; done
 (($#)) || usage
 
 VERBOSE=0
-_dry_run=0
+unset _dry_run
+unset _force
 
 main() {
 
@@ -30,6 +31,9 @@ main() {
         ;;
       --dry-run)
         _dry_run=1
+        ;;
+      --force)
+        _force=1
         ;;
       *)
         params+=("$1")
@@ -83,6 +87,12 @@ main() {
       ;;
     ce|'config-edit')
       EXP_config_edit "${params[@]}"
+      ;;
+    dd|'db-dump')
+      EXP_db_dump "${params[@]}"
+      ;;
+    di|'db-import')
+      EXP_db_import "${params[@]}"
       ;;
     *)
       echo "mbkp: unknown command '$cmd'"

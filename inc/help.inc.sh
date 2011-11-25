@@ -18,13 +18,15 @@ usage() {
   echo "config-export export all configuration files"
   echo "config-import import all configuration files"
   echo "config-edit   edit a configuration file"
+  echo "db-dump       dump database to file"
+  echo "db-import     import database from file"
   echo "help    show help on a given command"
   echo "version output version and copyright information"
   exit 1
 }
 
 EXP_version() {
-  echo "mbkp - Modular Backup (version 0.1.0)
+  echo "mbkp - Modular Backup (version 0.1.1-SNAPSHOT)
 
 Copyright (C) 2010-2011 Elifarley Cruz
 This is free software; see the source for copying conditions. There is NO
@@ -162,6 +164,22 @@ EXP_config_edit_usage() {
   echo "$0 config-edit <module>"
   echo
   echo "edit the configuration for a given module or the main one"
+  echo
+  exit 1
+}
+
+EXP_db_dump_usage() {
+  echo "$0 db-dump <module>"
+  echo
+  echo "dump database to file"
+  echo
+  exit 1
+}
+
+EXP_db_import_usage() {
+  echo "$0 db-import <module>"
+  echo
+  echo "import database from file"
   echo
   exit 1
 }

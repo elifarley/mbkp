@@ -196,3 +196,15 @@ EXP_config_edit() {
 
   ${EDITOR:-vim} "$MBKP_CONFIG_BASE/$file"
 }
+
+EXP_db_dump() {
+  (($#)) || EXP_db_dump_usage
+  init_module "$1"; shift
+  mysql_dump "$@"
+}
+
+EXP_db_import() {
+  (($#)) || EXP_db_import_usage
+  init_module "$1"; shift
+  mysql_import "$@"
+}
