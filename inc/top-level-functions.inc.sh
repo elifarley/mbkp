@@ -43,7 +43,7 @@ EXP_list() {
 EXP_verify() {
   (($#)) || EXP_verify_usage
   init_module "$1"; shift
-  dupl verify -v4 "${_file_selection[@]}" "$@" "$mbkp_full_target" "$mbkp_src"
+  dupl verify --allow-source-mismatch -v5 "$@" "$mbkp_full_target" /tmp | sed -e '/^Difference found/d' -e '/^Deleting /d' -e '/^Verify complete/d' -e '/^Using temporary directory/d' -e '/^Import of /d'
 }
 
 EXP_restore() {

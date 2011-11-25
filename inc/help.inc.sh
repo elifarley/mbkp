@@ -64,8 +64,11 @@ EXP_list_usage() {
 EXP_verify_usage() {
   echo "$0 verify <module> [<param> ...]"
   echo
-  echo "verify files contained in a backup against those at the source"
+  echo "verify the integrity of the repository"
   echo
+  echo "All archive files from the backup repository will be downloaded, decrypted and decompressed."
+  echo "Then, a checksum will be computed over the decompressed contents and verified against the originally recorded checksum"
+  echo "Source files WILL NOT BE read at all."
   exit 1
 }
 
