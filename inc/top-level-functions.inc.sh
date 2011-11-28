@@ -185,14 +185,12 @@ EXP_config_import() {
 }
 
 EXP_config_edit() {
-  local file=''
-  if (($#)); then
-    init_module "$1"; shift
+  init_config 1
+  local file='mbkp.conf'
+  (($#)) && {
+    module="$1"; shift
     file="modules/$module.conf"
-  else
-    init_config 1
-    file="mbkp.conf"
-  fi
+  }
 
   ${EDITOR:-vim} "$MBKP_CONFIG_BASE/$file"
 }
