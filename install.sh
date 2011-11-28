@@ -10,7 +10,7 @@ PREFIX="${1:-/usr}"
 echo "Installation prefix: $PREFIX"
 
 BIN_DIR="$PREFIX/bin"
-MAN_DIR="$PREFIX/share/man/man1"
+MAN_DIR="$PREFIX/share/man"
 DOC_DIR="$PREFIX/share/doc/mbkp"
 DATA_DIR="$PREFIX/lib/mbkp"
 
@@ -24,8 +24,10 @@ install -m755 "$CMD_BASE"/mbkp $DATA_DIR/
 install -d $BIN_DIR
 ln -s $DATA_DIR/mbkp $BIN_DIR/
 
-#install -d "$MAN_DIR"
-#install -m644 man/mbkp.1 "$MAN_DIR"
+install -d "$MAN_DIR/man1"
+m1="$MAN_DIR"/man1/mbkp.1.gz
+"$CMD_BASE"/man/man.sh | gzip -c9 > "$m1"
+chmod 644 "$m1"
 
 #install -d $DOC_DIR
 #install -m644 README $DOC_DIR/
