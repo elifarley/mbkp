@@ -29,12 +29,12 @@ init_config() {
   local _suppress_first_run_check="${1:-0}"; shift
 
   local mbkp_conf_file="$MBKP_CONF_FILE"
-  ((VERBOSE)) && echo "Calling $mbkp_conf_file"
+  ((_verbose)) && echo "Calling $mbkp_conf_file"
   . "$mbkp_conf_file" || exit $?
 
   mbkp_conf_file="$MBKP_CONFIG_BASE/mbkp.conf"
   if [[ -f "$mbkp_conf_file" ]]; then
-    ((VERBOSE)) && echo "Calling $mbkp_conf_file"
+    ((_verbose)) && echo "Calling $mbkp_conf_file"
     . "$mbkp_conf_file" || exit $?
   else
     ((_suppress_first_run_check)) || config_not_found
@@ -46,7 +46,7 @@ init_config() {
 
   local mbkp_priv_hook="$MBKP_CONFIG_BASE/priv/mbkp.conf"
   [ -f "$mbkp_priv_hook" ] && {
-    ((VERBOSE)) && echo "Calling $mbkp_priv_hook"
+    ((_verbose)) && echo "Calling $mbkp_priv_hook"
     . "$mbkp_priv_hook" || exit $?
   }
 
@@ -75,7 +75,7 @@ init_module() {
 
   module_hook="$MBKP_CONFIG_BASE/modules/$module.conf"
   [ -f "$module_hook" ] && {
-    ((VERBOSE)) && echo "Calling: $module_hook"
+    ((_verbose)) && echo "Calling: $module_hook"
     . "$module_hook" || exit $?
     mbkp_module_exists=1
   }
@@ -157,7 +157,7 @@ pre_module_backup() {
     echo "Calling: $pre_hook"
     . $pre_hook "$module_cache" || exit $?
   else
-    ((VERBOSE)) && echo "### NOT CALLED: $pre_hook"
+    ((_verbose)) && echo "### NOT CALLED: $pre_hook"
   fi
 
   [ -n "$DB_NAME" ] && time mysql_dump
@@ -172,7 +172,7 @@ post_module_backup() {
     echo "Calling: $post_hook"
    . $post_hook "$module_cache" || FAILED="$post_hook"
   else
-    ((VERBOSE)) && echo "### $post_hook NOT CALLED."
+    ((_verbose)) && echo "### $post_hook NOT CALLED."
   fi
 
 } # post_module_backup
@@ -184,7 +184,7 @@ pre_module_restore() {
     echo "Calling: $pre_hook"
     . $pre_hook "$module_cache" || exit $?
   else
-    ((VERBOSE)) && echo "### NOT CALLED: $pre_hook"
+    ((_verbose)) && echo "### NOT CALLED: $pre_hook"
   fi
 
   # TODO check '--force' and trhen call time mysql_restore
@@ -198,7 +198,7 @@ post_module_restore() {
     echo "Calling: $post_hook"
    . $post_hook "$module_cache" || FAILED="$post_hook"
   else
-    ((VERBOSE)) && echo "### $post_hook NOT CALLED."
+    ((_verbose)) && echo "### $post_hook NOT CALLED."
   fi
 
 } # post_module_restore

@@ -15,7 +15,7 @@ for item in "${_INCLUDES[@]}"; do . "$CMD_BASE/inc/$item.inc.sh"; done
 
 (($#)) || usage
 
-VERBOSE=0
+_verbose=0
 unset _dry_run
 unset _force
 
@@ -27,7 +27,7 @@ main() {
   while (($#)); do
     case "$1" in
       -v|--verbose)
-        VERBOSE="$2"; shift
+        _verbose=1
         ;;
       --dry-run)
         _dry_run=1
@@ -58,8 +58,11 @@ main() {
     r|restore)
       EXP_restore "${params[@]}"
       ;;
-    'version')
+    'version'|--version)
       EXP_version "${params[@]}"
+      ;;
+    --help)
+      usage "${params[@]}"
       ;;
     h|'help')
       EXP_help "${params[@]}"
