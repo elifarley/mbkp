@@ -1,23 +1,8 @@
-#!/usr/bin/env bash
-CMD_BASE="$(readlink -m $0)" || CMD_BASE="$0"; CMD_BASE="$(dirname $CMD_BASE)"
-. "$CMD_BASE/hg_kit.inc.sh"
-_POD="$CMD_BASE"/mbkp.1.pod
-
-_pod2man() {
-  local version="$(parse_hg_version $CMD_BASE/..)"
-  m4 -DMBKP_VERSION="$version" "$1" | pod2man --center="mbkp - Manual" --name="mbkp" --release="mbkp $version" --section=1
-}
-
-_pod2man "$_POD"
-
-: <<=cut
-=pod
-
 =encoding utf8
 
 =head1 NAME
 
-mbkp - Modular Backup tool
+B<mbkp> - The B<m>odular B<b>acB<k>uB<p> tool (version MBKP_VERSION)
 
 =head1 SYNOPSIS
 
@@ -88,4 +73,3 @@ General configuration file.
 =head1 SEE ALSO
 
 L<duplicity(1)>
-=cut

@@ -1,6 +1,25 @@
+EXP_version() {
+  cat <<VERSION
+mbkp - The modular backup tool (version $_MBKP_VERSION)
+(see http://bitbucket.org/elifarley/mbkp/)
+
+Copyright (C) 2010-2011 Elifarley Cruz
+This is free software; see the source for copying conditions. There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+VERSION
+  ((_verbose)) || return 0
+  duplicity --version | sed -n '1 p'
+  python --version | sed -n '1 p'
+  echo "Bash: $BASH_VERSION"
+  cat --version | sed -n '1 p'
+  sed --version | sed -n '1 p'
+  uname -a
+}
+
 usage() {
   cat <<USAGE
-MBKP - Modular Backup
+$(EXP_version | head -n1)
 Usage:
 $0 <command> [<param1> <param2> ...]
 
@@ -25,25 +44,6 @@ help    show help on a given command
 version output version and copyright information
 USAGE
   exit 1
-}
-
-EXP_version() {
-  cat <<VERSION
-mbkp - Modular Backup (version 0.1.1-SNAPSHOT)
-
-Copyright (C) 2010-2011 Elifarley Cruz
-This is free software; see the source for copying conditions. There is NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-
-VERSION
-  ((_verbose)) || return 0
-  duplicity --version | sed -n '1 p'
-  python --version | sed -n '1 p'
-  echo "Bash: $BASH_VERSION"
-  sed --version | sed -n '1 p'
-  cut --version | sed -n '1 p'
-  tr --version | sed -n '1 p'
-  uname -a
 }
 
 EXP_help() {
