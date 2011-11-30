@@ -2,7 +2,7 @@
 
 =head1 NAME
 
-B<mbkp> - The B<m>odular B<b>acB<k>uB<p> tool (version MBKP_VERSION)
+B<mbkp> - The B<m>odular B<b>acB<k>uB<p> tool (version m4_MBKP_VERSION)
 
 =head1 SYNOPSIS
 

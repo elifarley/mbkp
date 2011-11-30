@@ -1,6 +1,8 @@
 EXP_version() {
+  local mbkp_version
+  [[ $MBKP_VERSION == 'm4_MBKP_VERSION' ]] && mbkp_version='!NOT-INSTALLED!' || mbkp_version="$MBKP_VERSION"
   cat <<VERSION
-mbkp - The modular backup tool (version $_MBKP_VERSION)
+mbkp - The modular backup tool (version $mbkp_version)
 (see http://bitbucket.org/elifarley/mbkp/)
 
 Copyright (C) 2010-2011 Elifarley Cruz

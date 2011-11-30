@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
-_MBKP_VERSION='MBKP_VERSION'
+readonly _MBKP_VERSION='MBKP_VERSION'
 
 CMD_BASE="$(readlink -m $0)" || CMD_BASE="$0"; CMD_BASE="$(dirname $CMD_BASE)"
+eval readonly $(cat $CMD_BASE/inc/build.info)
 MBKP_CONF_FILE="$CMD_BASE/mbkp.conf"
 _INCLUDES=(
   configuration
