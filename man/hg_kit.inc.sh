@@ -13,7 +13,7 @@ latesttagdistance: 9
 
 EOF
 parse_hg_version() {
-set -x
+
   local hg_info_file="$1/.hg_archival.txt"
   local version
   [[ -f $hg_info_file ]] || {
@@ -21,10 +21,24 @@ set -x
     return 1
   }
 
-  params=()
-  while read -r line; do
-    eval $(sed '/^#/'d <<<"$line" | awk -v sq="'" 'BEGIN { FS = ":" } ; { gsub(/ */,"",$2); print "HG_" $1 "=" sq $2 sq ";" }' )
-  done < "$hg_info_file"
-  local version="${HG_tag:-$HG_latesttag+$HG_latesttagdistance}"
+  unset -v HG_{tag,latesttag,latesttagdistance}
+  parse_properties "$hg_info_file" 'HG_' ':'
+
+  [[ -z $HG_tag && -z $HG_latesttag ]] && local version='!INVALID-HG-INFO!' || \
+    local version="${HG_tag:-$HG_latesttag+$HG_latesttagdistance}"
   echo $version
+}
+
+parse_properties() {
+  local _file="$1"; shift
+  local _prefix="$1"; shift
+  local _separator="$1"
+
+  while read -r line; do
+    [[ -z $line || $line == \#* ]] && continue
+    local key="$(cut -d$_separator -f1 <<<$line)"
+    local val="$(cut -d$_separator -f2 <<<$line)"
+    eval "$_prefix$(echo $key)='$(echo $val)'"
+  done < "$_file"
+
 }
