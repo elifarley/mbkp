@@ -1,5 +1,6 @@
 EXP_backup_modules() {
   (($#)) || EXP_backup_modules_usage
+  print_version
 
   local args=()
   local opts=()
@@ -25,6 +26,8 @@ EXP_backup_modules() {
 
 EXP_status() {
   (($#)) || EXP_status_usage
+  print_version
+
   init_module "$1"; shift
   if ((_has_dry_run)); then
     dupl -v5 --dry-run $extra "${_file_selection[@]}" "$@" "$mbkp_src" "$mbkp_full_target"
@@ -36,20 +39,25 @@ EXP_status() {
 
 EXP_list() {
   (($#)) || EXP_list_usage
+  print_version
+
   init_module "$1"; shift
   dupl list-current-files "$@" "$mbkp_full_target"
 }
 
 EXP_verify() {
   (($#)) || EXP_verify_usage
+  print_version
+
   init_module "$1"; shift
   dupl verify --allow-source-mismatch -v5 "$@" "$mbkp_full_target" /tmp | sed -e '/^Difference found/d' -e '/^Deleting /d' -e '/^Verify complete/d' -e '/^Using temporary directory/d' -e '/^Import of /d'
 }
 
 EXP_restore() {
   (($#)) || EXP_restore_usage
-  local _restore_target=''
+  print_version
 
+  local _restore_target=''
   local args=()
   local opts=()
   while (($#)); do
@@ -81,6 +89,8 @@ EXP_restore() {
 
 EXP_log() {
   (($#)) || EXP_log_usage
+  print_version
+
   init_module "$1"; shift
   init_module "$module"
   dupl collection-status "$@" "$mbkp_full_target"

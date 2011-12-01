@@ -1,8 +1,13 @@
-EXP_version() {
+print_version() {
+  local brief="$1"
   local mbkp_version
   [[ $MBKP_VERSION == 'm4_MBKP_VERSION' ]] && mbkp_version='!NOT-INSTALLED!' || mbkp_version="$MBKP_VERSION"
+  ((brief)) && echo "mbkp $mbkp_version" || echo -e "mbkp - The modular backup tool (version $mbkp_version)\n"
+}
+
+EXP_version() {
   cat <<VERSION
-mbkp - The modular backup tool (version $mbkp_version)
+$(print_version)
 (see http://bitbucket.org/elifarley/mbkp/)
 
 Copyright (C) 2010-2011 Elifarley Cruz
@@ -21,7 +26,7 @@ VERSION
 
 usage() {
   cat <<USAGE
-$(EXP_version | head -n1)
+$(print_version)
 Usage:
 $0 <command> [<param1> <param2> ...]
 
