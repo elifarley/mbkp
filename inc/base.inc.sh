@@ -4,6 +4,16 @@
 # This software may be used and distributed according to the terms of the
 # GNU General Public License version 2 or any later version.
 
+print_hms() {
+
+  local seconds="${1:-now}"; [[ $seconds == 'now' ]] && seconds="$SECONDS"
+  (($# > 1)) && {
+    local _end="$2"; [[ $_end == 'now' ]] && _end="$SECONDS"
+    seconds=$((_end - seconds))
+  }
+  printf '%02d:%02d:%02d\n' $((seconds / 3600)) $((seconds % 3600 / 60)) $((seconds % 60))
+}
+
 add_prefix() {
   set -f
   local prefix="$1"; shift

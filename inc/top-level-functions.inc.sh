@@ -21,6 +21,8 @@ EXP_backup_modules() {
     [ -z "$FAILED" ] || failed_modules+=("$FAILED")
   done
 
+  echo "($(print_hms)) ENDED backup of all modules"
+
   [ -z "$failed_modules" ] || {
     echo "#################################################################"
     echo "############################# FAILED MODULES: '${failed_modules[@]}' !"
@@ -41,6 +43,7 @@ EXP_status() {
     echo "'--dry-run' not available. Will have to download all backup archives from the repository"
     dupl verify -v4 "${_file_selection[@]}" "$@" "$mbkp_full_target" "$mbkp_src"
   fi
+  echo "($(print_hms)) elapsed"
 }
 
 EXP_list() {
@@ -49,6 +52,7 @@ EXP_list() {
 
   init_module "$1"; shift
   dupl list-current-files "$@" "$mbkp_full_target"
+  echo "($(print_hms)) elapsed"
 }
 
 EXP_verify() {
@@ -57,6 +61,7 @@ EXP_verify() {
 
   init_module "$1"; shift
   dupl verify --allow-source-mismatch -v5 "$@" "$mbkp_full_target" /tmp | sed -e '/^Difference found/d' -e '/^Deleting /d' -e '/^Verify complete/d' -e '/^Using temporary directory/d' -e '/^Import of /d'
+  echo "($(print_hms)) elapsed"
 }
 
 EXP_restore() {
@@ -91,6 +96,7 @@ EXP_restore() {
   pre_module_restore
   dupl restore -v5 "${opts[@]}" "$mbkp_full_target" "$_restore_target"
   post_module_restore
+  echo "($(print_hms)) elapsed"
 }
 
 EXP_log() {
@@ -100,6 +106,7 @@ EXP_log() {
   init_module "$1"; shift
   init_module "$module"
   dupl collection-status "$@" "$mbkp_full_target"
+  echo "($(print_hms)) elapsed"
 }
 
 EXP_call() {
@@ -215,10 +222,12 @@ EXP_db_dump() {
   (($#)) || EXP_db_dump_usage
   init_module "$1"; shift
   mysql_dump "$@"
+  echo "($(print_hms)) elapsed"
 }
 
 EXP_db_import() {
   (($#)) || EXP_db_import_usage
   init_module "$1"; shift
   mysql_import "$@"
+  echo "($(print_hms)) elapsed"
 }

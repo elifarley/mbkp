@@ -22,7 +22,7 @@ dupl() {
 }
 
 backup_single_module() {
-
+  local _module_start_time="$SECONDS"
   local module="$1"; shift
   local _lock="mbkp-backup.$USER.$module"
   local _lock_ok=0
@@ -49,6 +49,8 @@ backup_single_module() {
     echo "############################# FAILED '$FAILED' !"
     echo "##################################################"
   }
+
+  echo -n "($(print_hms $_module_start_time now)) "
   ((_lock_ok)) && echo "ENDED backup: '$module'" || echo "SKIPPED backup: '$module'"
   echo "======================================================================"
   echo
