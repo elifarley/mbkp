@@ -1,3 +1,9 @@
+#
+# Copyright 2010-2011 Elifarley Cruz <elifarley@gmail.com>
+#
+# This software may be used and distributed according to the terms of the
+# GNU General Public License version 2 or any later version.
+
 EXP_backup_modules() {
   (($#)) || EXP_backup_modules_usage
   print_version

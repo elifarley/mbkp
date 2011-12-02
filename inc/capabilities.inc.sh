@@ -1,3 +1,9 @@
+#
+# Copyright 2010-2011 Elifarley Cruz <elifarley@gmail.com>
+#
+# This software may be used and distributed according to the terms of the
+# GNU General Public License version 2 or any later version.
+
 # See http://bazaar.launchpad.net/~duplicity-team/duplicity/0.6-series/view/head:/CHANGELOG
 
 # --name: v0.6.01

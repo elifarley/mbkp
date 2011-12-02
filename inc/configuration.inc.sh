@@ -1,3 +1,9 @@
+#
+# Copyright 2010-2011 Elifarley Cruz <elifarley@gmail.com>
+#
+# This software may be used and distributed according to the terms of the
+# GNU General Public License version 2 or any later version.
+
 init_config_dir() {
   MBKP_FIRST_RUN=1
   local modules_dir="$MBKP_CONFIG_BASE/modules"

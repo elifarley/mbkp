@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
+#
+# mbkp - The modular backup tool
+#
+# Copyright 2010-2011 Elifarley Cruz <elifarley@gmail.com>
+#
+# This software may be used and distributed according to the terms of the
+# GNU General Public License version 2 or any later version.
+
 readonly _MBKP_VERSION='MBKP_VERSION'
 
 CMD_BASE="$(readlink -m $0)" || CMD_BASE="$0"; CMD_BASE="$(dirname $CMD_BASE)"
