@@ -59,8 +59,10 @@ _acquire_lock() {
   # Atomically create lock file
   set -o noclobber && \
   printf '%010d\n' $$ &>/dev/null > "$_lock" && \
-  delete_on_exit "$_lock" && \
+  set +o noclobber && delete_on_exit "$_lock" && \
   return 0
+
+  set +o noclobber
 
   local _other_pid=$(cat $_lock) || {
     echo "Failed to read other PID from '$_lock'" >&2
@@ -82,19 +84,19 @@ _acquire_lock() {
 }
 
 release_lock() {
-  local _lock="$1"; shift
+  local _lock="$1"
   rm -rf "/var/lock/LK.$_lock"
   trap - 0
   echo "Lock released: '$_lock'"
 }
 
 delete_on_exit() {
-  local file_to_remove="$1"; shift
+  local file_to_remove="$1"
   trap '\
     _ecode=$?;
-    set +o noclobber
     echo "Removing '$file_to_remove'. Exit code: $_ecode" >&2
     rm -r "'$file_to_remove'"
   ' 0
   return 0
 }
+
