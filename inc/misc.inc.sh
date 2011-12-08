@@ -24,7 +24,7 @@ dupl() {
 backup_single_module() {
   local _module_start_time="$SECONDS"
   local module="$1"; shift
-  local _lock="mbkp-backup.$USER.$module"
+  local _lock="mbkp-backup.${USER:-$(basename $HOME)}.$module"
   local _lock_ok=0
 
   acquire_lock "$_lock" && {
