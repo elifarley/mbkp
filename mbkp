@@ -12,7 +12,7 @@ readonly _MBKP_VERSION='MBKP_VERSION'
 CMD_BASE="$(readlink -m $0)" || CMD_BASE="$0"; CMD_BASE="$(dirname $CMD_BASE)"
 eval readonly $(cat $CMD_BASE/inc/build.info)
 MBKP_CONF_FILE="$CMD_BASE/mbkp.conf"
-_INCLUDES=(
+_INCLUDES='
   configuration
   base
   capabilities
@@ -20,8 +20,8 @@ _INCLUDES=(
   misc
   mysql
   help
-)
-for item in "${_INCLUDES[@]}"; do . "$CMD_BASE/inc/$item.inc.sh"; done
+'
+for item in $_INCLUDES; do . "$CMD_BASE/inc/$item.inc.sh"; done
 
 (($#)) || usage
 
