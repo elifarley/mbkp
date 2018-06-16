@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-CMD_BASE="$(readlink -m $0)" || CMD_BASE="$0"; CMD_BASE="$(dirname $CMD_BASE)"
+CMD_BASE="$(readlink -m "$0")" || CMD_BASE="$0"; CMD_BASE="$(dirname "$CMD_BASE")"
 set -e
-for item in $CMD_BASE/inc/*.inc.sh ; do . "$item"; done
+for item in "$CMD_BASE"/inc/*.inc.sh ; do . "$item"; done
 
 # Usage: $0 [<PREFIX>]
 PREFIX="${1:-/usr}"
@@ -46,5 +46,3 @@ chmod 644 "$m1"*
 #install -m644 examples/* $DOC_DIR/examples/
 
 echo "Done."
-
-exit 0
